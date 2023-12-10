@@ -1,0 +1,59 @@
+<div class="row" data-media-id="{{media_data.id}}">
+    <div class="col-6">
+        <div class="form-group">
+            <label class="form-label fw-semibold">Make Final Clip For Scene:</label>
+            <div class="input-group mb-3">
+                <input type="text" name="scene" class="form-control" placeholder="Scene ID" data-param="scene">
+                <button type="button" class="btn btn-secondary btn-active-light-success update-scene">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <i class="fa-solid fa-check" style="display: none;"></i> <!-- Add a check icon but keep it hidden initially -->
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    console.log('media_selected loaded');
+    $('.update-scene').click(function () {
+        var btn = $(this); // Reference to the button
+        console.log('update scene');
+
+        // Parsing sceneId as an integer
+        var sceneId = parseInt($('input[name="scene"]').val(), 10);
+
+        // Parsing mediaId as an integer
+        var mediaId = parseInt(btn.closest('div[data-media-id]').data('media-id'), 10);
+
+        console.log('Media ID: ' + mediaId + ', Scene ID: ' + sceneId);
+
+        // Create a nested key-value pair structure
+        var data = {
+            scene: sceneId,
+            new_data: {
+                final_clip: mediaId
+            }
+        };
+
+        // Log the structured data
+        console.log(data);
+
+        // AJAX request with structured data
+        $.ajax({
+            type: 'POST',
+            url: '/update_scene_data', // Updated with your Flask route
+            contentType: 'application/json', // Setting content type as JSON
+            data: JSON.stringify(data), // Converting data to JSON string
+            success: function (response) {
+                // Replace arrow with check icon on success
+                btn.find('.fa-arrow-right').hide(); // Hide arrow
+                btn.find('.fa-check').show(); // Show check mark
+                // showToast("Success!"); // Show success toast (if you have a showToast function)
+            },
+            error: function (xhr, status, error) {
+                // showToast("Error"); // Show error toast (if you have a showToast function)
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,38 @@
+<form id="compose_final">
+    
+
+    <input type="hidden" name="project_id" value="{{ data.project_id }}">
+    <input type="hidden" name="scene_id" value="{{ data.scene_id }}">
+
+
+    
+    </div>
+
+</form>
+
+
+
+<button type="submit" 
+id="compose_final_button" 
+class="btn btn-primary form_submitter" 
+data-form-id="compose_final">
+Compose Final Video
+
+</button>
+
+<script>
+
+    $(document).on("formSubmitted.compose_final", function(event, response) {
+        console.log("Submitted", response);
+        document.location.reload();
+    });
+    
+    $(document).on("formSubmissionFailed.compose_final", function(event, error) {
+        // console.error("project_actions submission failed", error);
+        console.log("error", error); 
+    });
+    
+</script>
+
+{% include 'partials/form_handler.html' %}
+    

@@ -1,0 +1,145 @@
+<div class="app-content flex-column-fluid" id="kt_app_content">
+	<div class="app-container container-xxl" id="kt_app_content_container1">
+	  <div class="row">
+		<!-- Existing Card -->
+		
+
+
+		<div class="col-xl-9 mb-5">
+			<div class="card">
+			  <div class="card-header">
+				<div class="card-title fs-3 fw-bold">Form</div>
+			  </div>
+			  <div class="card-body p-9">
+				<div id="form-container">
+				  <form action="#" method="post">
+					<!-- Text input -->
+					<div class="mb-3">
+					  <label for="username" class="form-label">Username</label>
+					  <input type="text" class="form-control" id="username" name="username" required>
+					</div>
+					<!-- Radio buttons -->
+					<div class="mb-3">
+					  <label class="form-label">Gender</label>
+					  <div class="form-check">
+						<input class="form-check-input" type="radio" name="gender" id="male" value="male">
+						<label class="form-check-label" for="male">Male</label>
+					  </div>
+					  <div class="form-check">
+						<input class="form-check-input" type="radio" name="gender" id="female" value="female">
+						<label class="form-check-label" for="female">Female</label>
+					  </div>
+					</div>
+					<!-- Checkbox -->
+					<div class="mb-3">
+					  <div class="form-check">
+						<input class="form-check-input" type="checkbox" value="1" id="subscribe" name="subscribe">
+						<label class="form-check-label" for="subscribe">Subscribe to newsletter</label>
+					  </div>
+					</div>
+					<!-- Submit button -->
+					<button type="submit" class="btn btn-primary">Submit</button>
+				  </form>
+
+
+				  
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  
+
+
+
+
+		<!-- New Card -->
+		<div class="col-xl-3 mb-5">
+		  <div class="card">
+			<div class="card-header">
+			  <div class="card-title fs-3 fw-bold">Result</div>
+			</div>
+			<div class="card-body p-9">
+			  <div id="submission-result-container">
+				<!-- The area containing text you wish to copy -->
+
+
+			  </div>
+			  <button id="copy-button" class="btn btn-primary">Copy Result</button>
+
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </div>
+  
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+		
+        const form = document.getElementById('form-container'); // Replace with the ID of your form
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            // Dynamically collect all input fields
+            let formData = {};
+            Array.from(form.querySelectorAll('input, select, textarea')).forEach(input => {
+                let type = input.getAttribute('type');
+                
+                if (type === 'radio' || type === 'checkbox') {
+                    if (input.checked) {
+                        formData[input.name] = input.value;
+                    }
+                } else {
+                    formData[input.name] = input.value;
+                }
+            });
+
+            fetch('/submit_form', { // Replace with your API endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display response in your submission-result-container
+                const resultContainer = document.getElementById('submission-result-container');
+                resultContainer.innerHTML = `<p>${data.message}</p>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const copyButton = document.getElementById('copy-button');
+        const resultToCopy = document.getElementById('submission-result-container');
+
+        copyButton.addEventListener('click', function() {
+            // Create a temporary textarea to hold the text to be copied
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = resultToCopy.textContent;
+            document.body.appendChild(tempTextarea);
+            
+            // Select and copy the text
+            tempTextarea.select();
+            document.execCommand('copy');
+            
+            // Remove the temporary textarea
+            document.body.removeChild(tempTextarea);
+            
+            // Optionally, you can alert the user that the text has been copied
+            // alert('Result copied to clipboard');
+        });
+    });
+</script>

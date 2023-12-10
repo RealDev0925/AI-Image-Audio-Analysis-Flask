@@ -1,0 +1,93 @@
+  <div class="container mt-5">
+    <form id="article-form">
+      <div class="mb-3">
+        <label for="largeTextBox" class="form-label">Large Text Box</label>
+        <textarea class="form-control" id="largeTextBox" rows="4" required></textarea>
+        <div id="validationMessage" class="invalid-feedback">
+          Please fill out this field.
+        </div>
+      </div>
+      <button type="submit" id="submit-button" class="btn btn-primary w-100">Submit</button>
+    </form>
+    <div id="result" class="mt-3"></div>
+  </div>
+
+
+
+
+
+
+  <script>
+
+
+function showLoadingIndicator() {
+    // Populate the page loading element dynamically.
+    const loadingEl = document.createElement("div");
+    document.body.prepend(loadingEl);
+    loadingEl.classList.add("page-loader");
+    loadingEl.classList.add("flex-column");
+    loadingEl.innerHTML = `
+        <span class="spinner-border text-primary" role="status"></span>
+        <span class="text-muted fs-6 fw-semibold mt-5">Loading...</span>
+    `;
+
+    // Show page loading
+    KTApp.showPageLoading();
+
+    // Hide after 3 seconds
+    setTimeout(function() {
+        KTApp.hidePageLoading();
+        loadingEl.remove();
+    }, 3000);
+}
+
+
+
+    
+
+    const form = document.getElementById('article-form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const article = document.getElementById('largeTextBox').value;
+      const projectId = "{{ project_id }}"; // Render this value server-side
+      const submitButton = document.getElementById('submit-button');
+      const validationMessage = document.getElementById('validationMessage');
+
+      // Validate if textarea is empty
+      if (article.trim() === "") {
+        validationMessage.style.display = "block";
+        return;
+      } else {
+        validationMessage.style.display = "none";
+      }
+
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+      submitButton.disabled = true;
+
+      fetch('/split_text_api', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ article: article, project_id: projectId })
+      })
+      .then(response => response.json())
+      .then(data => {
+
+        var drawerEl = document.querySelector("#kt_drawer_example_permanent");
+        var drawer = KTDrawer.getInstance(drawerEl);
+        drawer.hide();
+        showLoadingIndicator();
+        window.location.reload(); // Refresh the page on success
+
+
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
+      });
+    });
+  </script>
+

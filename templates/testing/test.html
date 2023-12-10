@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en" >
+    <!--begin::Head-->
+    <head><base href=""/>
+        <title>Projects</title>
+        <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta property="og:title" content="Tool" />
+  
+        <link rel="shortcut icon" href="{{ url_for("static", filename="assets/media/logos/favicon.ico") }}"/>
+        <!--begin::Fonts(mandatory for all pages)-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700"/>        
+        
+        <!--end::Fonts-->
+                    <!--begin::Vendor Stylesheets(used for this page only)-->
+                            <link href="{{ url_for("static", filename="assets/plugins/custom/fullcalendar/fullcalendar.bundle.css") }}" rel="stylesheet" type="text/css"/>
+                            <link href="{{ url_for("static", filename="assets/plugins/custom/datatables/datatables.bundle.css") }}" rel="stylesheet" type="text/css"/>
+                        <!--end::Vendor Stylesheets-->
+                    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+                            <link href="{{ url_for("static", filename="assets/plugins/global/plugins.bundle.css") }}" rel="stylesheet" type="text/css"/>
+                            <link href="{{ url_for("static", filename="assets/css/style.bundle.css") }}" rel="stylesheet" type="text/css"/>
+                        <!--end::Global Stylesheets Bundle-->
+        <script>
+            // Frame-busting to prevent site from being loaded within a frame without permission (click-jacking)
+            if (window.top != window.self) {
+                window.top.location.replace(window.self.location.href);
+            }
+        </script>
+    </head>
+    <!--end::Head-->
+    <!--begin::Body-->
+    <body  id="kt_app_body" data-kt-app-page-loading-enabled="true" data-kt-app-page-loading="on" data-kt-app-layout="light-sidebar" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true"  class="app-default" >
+        {% include 'theme_partials/partials/theme-mode/_init.html' %}
+        {% include 'theme_partials/layout/partials/_page-loader.html' %}
+
+
+
+<!--begin::App-->
+<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+    <!--begin::Page-->
+    <div class="app-page  flex-column flex-column-fluid " id="kt_app_page">
+    {% include 'partials/header.html' %}
+        <!--begin::Wrapper-->
+        <div class="app-wrapper  flex-column flex-row-fluid " id="kt_app_wrapper">
+    {% include 'partials/sidebar.html' %}
+            <!--begin::Main-->
+            <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+                
+                
+                
+                
+                
+                
+                
+<style>
+    .modal {
+    position: fixed; /* Changed from absolute to fixed */
+    overflow: hidden;
+}
+.modal.fade.show {
+    /* Base style for all modals when active */
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Styles for individual modals based on their order */
+.modal.fade.show:nth-of-type(1) .modal-dialog {
+    transform: translate(0, 0);
+    z-index: 1050;
+}
+
+.modal.fade.show:nth-of-type(2) .modal-dialog {
+    transform: translate(30px, 30px);
+    z-index: 1049;
+}
+
+.modal.fade.show:nth-of-type(3) .modal-dialog {
+    transform: translate(60px, 60px);
+    z-index: 1048;
+}
+
+/* Add more if you have more modals, each shifting further */
+
+</style> 
+                
+                
+                
+                
+                
+
+
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_stacked_1">
+    Launch demo modal
+</button>
+    
+<div class="modal fade cascading-modal" tabindex="-1" id="kt_modal_stacked_1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Modal title</h3>
+    
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::Close-->
+            </div>
+    
+            <div class="modal-body">
+                ...
+    
+                <button type="button" class="btn btn-primary" data-bs-stacked-modal="#kt_modal_stacked_2">
+                    Launch stacked modal
+                </button>
+            </div>
+    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <div class="modal fade cascading-modal" tabindex="-1" id="kt_modal_stacked_2">
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Stacked modal title</h3>
+    
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::Close-->
+            </div>
+    
+            <div class="modal-body">
+                ...
+    
+                <button type="button" class="btn btn-primary" data-bs-stacked-modal="#kt_modal_stacked_3">
+                    Launch stacked modal
+                </button>
+            </div>
+    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <div class="modal fade cascading-modal" tabindex="-1" id="kt_modal_stacked_3">
+
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Stacked modal title</h3>
+    
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::Close-->
+            </div>
+    
+            <div class="modal-body">
+                ...
+            </div>
+    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+<script>
+var elements = Array.prototype.slice.call(document.querySelectorAll("[data-bs-stacked-modal]"));
+
+if (elements && elements.length > 0) {
+    elements.forEach((element) => {
+        if (element.getAttribute("data-kt-initialized") === "1") {
+            return;
+        }
+
+        element.setAttribute("data-kt-initialized", "1");
+
+        element.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const modalEl = document.querySelector(this.getAttribute("data-bs-stacked-modal"));
+
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        });
+    });
+}
+
+</script>
+
+<script>
+
+function makeModalDraggable(modalId) {
+    var modalElement = document.querySelector(modalId);
+    if (!modalElement) return;
+
+    dragElement(modalElement);
+
+    function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (elmnt.querySelector('.modal-header')) {
+            // if present, the header is where you move the DIV from:
+            elmnt.querySelector('.modal-header').onmousedown = dragMouseDown;
+        } else {
+            // otherwise, move the DIV from anywhere inside the DIV:
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+}
+
+// Initialize draggable modals
+document.addEventListener("DOMContentLoaded", function() {
+    makeModalDraggable('#kt_modal_stacked_1');
+    makeModalDraggable('#kt_modal_stacked_2');
+    makeModalDraggable('#kt_modal_stacked_3');
+    // Add similar lines for other modals if any
+});
+
+
+</script>
+
+
+
+
+
+                <!--end::Content wrapper-->
+                {#% include 'theme_partials/layout/partials/_footer.html' %#}
+                </div>
+            <!--end:::Main-->
+                    </div>
+        <!--end::Wrapper-->
+            </div>
+    <!--end::Page-->
+</div>
+<!--end::App-->
+{% include 'theme_partials/partials/_drawers.html' %}
+
+
+    <!--layout-partial:layout/_default.html-->
+    
+
+    <!--layout-partial:partials/_scrolltop.html-->
+    {% include 'theme_partials/partials/_scrolltop.html' %}
+    <!--begin::Modals-->
+    {% include 'theme_partials/partials/modals/_upgrade-plan.html' %}
+    {% include 'theme_partials/partials/modals/users-search/_main.html' %}
+    {% include 'theme_partials/partials/modals/_invite-friends.html' %}
+    <!--end::Modals-->
+       
+       
+            <!--begin::Javascript-->
+        <script>
+            var hostUrl = "assets/";       
+            
+            </script>
+                    <!--begin::Global Javascript Bundle(mandatory for all pages)-->
+                            <script src="{{ url_for("static", filename="assets/plugins/global/plugins.bundle.js") }}"></script>
+                            <script src="{{ url_for("static", filename="assets/js/scripts.bundle.js") }}"></script>
+                        <!--end::Global Javascript Bundle-->
+                    <!--begin::Vendors Javascript(used for this page only)-->
+                            <script src="{{ url_for("static", filename="assets/plugins/custom/fullcalendar/fullcalendar.bundle.js") }}"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script>
+                            <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script>
+                            <script src="{{ url_for("static", filename="assets/plugins/custom/datatables/datatables.bundle.js") }}"></script>
+                        <!--end::Vendors Javascript-->
+                    <!--begin::Custom Javascript(used for this page only)-->
+                            <script src="{{ url_for("static", filename="assets/js/widgets.bundle.js") }}"></script>
+                            <script src="{{ url_for("static", filename="assets/js/custom/apps/chat/chat.js") }}"></script>
+                            <script src="{{ url_for("static", filename="assets/js/custom/utilities/modals/upgrade-plan.js") }}"></script>
+                            <script src="{{ url_for("static", filename="assets/js/custom/utilities/modals/users-search.js") }}"></script>
+                        <!--end::Custom Javascript-->
+                <!--end::Javascript-->
+
+
+
+		<!--end::Global Javascript Bundle-->
+		<!--begin::Vendors Javascript(used for this page only)-->
+
+
+		<script src="{{ url_for("static", filename="assets/plugins/custom/datatables/datatables.bundle.js") }}"></script>
+		<!--end::Vendors Javascript-->
+		<!--begin::Custom Javascript(used for this page only)-->
+		<script src="{{ url_for("static", filename="assets/js/custom/apps/user-management/users/list/table.js") }}"></script>
+
+		<script src="{{ url_for("static", filename="assets/js/custom/apps/user-management/users/list/export-users.js") }}"></script>
+
+        
+		<script src="{{ url_for("static", filename="assets/js/custom/apps/user-management/users/list/add.js") }}"></script>
+
+
+
+
+
+
+            </body>
+    <!--end::Body-->
+</html>

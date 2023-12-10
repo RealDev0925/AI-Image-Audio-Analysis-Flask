@@ -1,0 +1,13 @@
+You are making a story board for a movie.
+
+{{input}}
+
+For each scene: Write 5 key phrases that represent the theme of this text.
+Use a new line for each scene.
+Split each phrase with a comma. 
+Put Quotations around each phrase.
+Make each phrase something that you could draw or find a picture of.
+Do not name any specific characters or names.
+If there is no explicit theme, write phrases that capture the essence of the scene symbolically.
+Write phrases for every scene.
+Do not repeat any phrases.

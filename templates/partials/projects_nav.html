@@ -1,0 +1,109 @@
+<div class="rounded bg-gray-200 d-flex justify-content-between mb-0 py-2 px-10">
+    <!--begin::Nav wrapper-->
+    <ul class="nav flex-wrap border-transparent">
+        <!--begin::Nav item-->
+        <li class="nav-item my-1">
+            <a class="btn btn-sm btn-color-gray-600 bg-state-body btn-active-color-gray-800 fw-bolder fw-bold fs-6 fs-lg-base nav-link px-3 px-lg-4 mx-1 {{ 'active' if subpage == 'scenes' else '' }}"
+                href="/project/{{project_id}}">
+                Scenes
+            </a>
+        </li>
+        <!--end::Nav item-->
+
+        <!--begin::Nav item-->
+        <li class="nav-item my-1">
+            <a class="btn btn-sm btn-color-gray-600 bg-state-body btn-active-color-gray-800 fw-bolder fw-bold fs-6 fs-lg-base nav-link px-3 px-lg-4 mx-1 {{ 'active' if subpage == 'compose' else '' }}"
+                href="/compose/{{project_id}}">
+                Compose
+            </a>
+        </li>
+        <!--end::Nav item-->
+    </ul>
+    <!--end::Nav wrapper-->
+
+    <!--begin::Settings Button-->
+    <button type="button"
+        class="btn btn-sm btn-color-gray-600 bg-state-body btn-active-color-gray-800 fw-bolder fw-bold fs-6 fs-lg-base nav-link px-3 px-lg-4"
+        id="settings_button" data-bs-toggle="modal" data-bs-target="#settings_modal">
+        <i class="fa-solid fa-gear"></i> Project Settings
+    </button>
+    <!--end::Settings Button-->
+</div>
+
+<div class="rounded d-flex justify-content-between py-0 px-10 {{ '' if subpage == 'scenes' else 'd-none' }}">
+    <div class="nav flex-wrap border-transparent gap-5 mt-2">
+        <button type="button" class="btn btn-sm btn-light" id="projectActions" data-kt-drawer-show="true"
+            data-kt-drawer-target="#drawer_universal">
+            <i class="fa-solid fa-download"></i>
+            Input Scene Data
+        </button>
+
+        <button type="button" id="ai_images" class="btn btn-sm btn-light" data-kt-drawer-show="true"
+        data-kt-drawer-target="#drawer_universal">
+        <i class="fas fa-robot"></i>Ai images
+        </button>
+
+        <button type="button" id="GetClips" class="btn btn-sm btn-light" data-kt-drawer-show="true"
+            data-kt-drawer-target="#drawer_universal">
+            <i class="fa-solid fa-photo-film"></i>Get Clips
+        </button>
+    
+    
+    </div>
+</div>
+
+<!-- Compose Page menu -->
+<div class="rounded d-flex justify-content-between py-0 px-10 {{ '' if subpage == 'compose' else 'd-none' }}">
+    <div class="nav flex-wrap border-transparent gap-5 mt-2">
+
+        <button type="button" class="btn btn-sm btn-light" id="tts_button" data-kt-drawer-show="true"
+        data-kt-drawer-target="#drawer_universal">
+        <i class="fas fa-volume"></i>
+        Text To Speech
+        </button>
+
+        <button type="button" class="btn btn-sm btn-light" id="words_button" data-kt-drawer-show="true"
+        data-kt-drawer-target="#drawer_universal">
+        <i class="fas fa-align-left"></i>
+        Words
+        </button>
+
+        <button type="button" class="btn btn-sm btn-light" id="compose_final_button" data-kt-drawer-show="true"
+        data-kt-drawer-target="#drawer_universal">
+        <i class="fa-solid fa-video"></i>
+        Compose Final Video
+        </button>
+
+        <!-- <button type="button" id="GetClips" class="btn btn-sm btn-light" data-kt-drawer-show="true"
+            data-kt-drawer-target="#drawer_universal">
+            <i class="fa-solid fa-photo-film"></i>Get Clips
+        </button> -->
+
+    </div>
+</div>
+
+<style>
+    #drawer_universal_close {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  </style>
+  <!--begin::Drawer-->
+  <div id="drawer_universal" class="bg-white" data-kt-drawer="true" data-kt-drawer-activate="true"
+    data-kt-drawer-toggle="#drawer_universal_toggle" data-kt-drawer-close="#drawer_universal_close"
+    data-kt-drawer-overlay="true" data-kt-drawer-permanent="false" data-kt-drawer-direction="end"
+    data-kt-drawer-width="{default:'300px', 'lg': '900px'}" style="width: 900px !important;">
+    
+    <div class="card rounded-0 w-100">
+        <div class="btn btn-sm btn-icon btn-active-light-primary p-0 m-0" id="drawer_universal_close">
+            <i class="fa-solid fa-x"></i>
+          </div>
+    
+        <div class="card-body py-5">
+        <div id="drawer_universal_content" class="hover-scroll-overlay-y">...</div>
+        </div>
+  
+    </div>
+  </div>
+  <!--end::Drawer-->

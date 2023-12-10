@@ -1,0 +1,263 @@
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Tagify -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <!-- Your form repeater script -->
+    <script src="{{ url_for('static', filename='assets/js/formrepeater.js') }}"></script>
+    <!-- Bootstrap 5 -->
+    <!-- Include your Bootstrap 5 CSS here -->
+
+
+    <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+    
+<div class="row">
+<div class="col-lg-6">
+    
+<!--begin::Form-->
+<form class="form" action="#" method="post">
+    <!--begin::Input group-->
+    <div class="form-group row">
+
+        <!--begin::Col-->
+        <div class="col-lg-10 border">
+            <!--begin::Dropzone-->
+            
+            <div class="dropzone dropzone-queue mb-2" id="kt_dropzonejs_example_3">
+                <!--begin::Controls-->
+                <div class="dropzone-panel mb-lg-0 mb-2">
+                    <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>
+                    <a class="dropzone-remove-all btn btn-sm btn-light-primary">Remove All</a>
+                </div>
+                <!--end::Controls-->
+
+                <!--begin::Items-->
+                <div class="dropzone-items wm-200px">
+                    <div class="dropzone-item" style="display:none">
+                        <!--begin::File-->
+                        <div class="dropzone-file">
+                            <div class="dropzone-filename" title="some_image_file_name.jpg">
+                                <span data-dz-name>some_image_file_name.jpg</span>
+                                <strong>(<span data-dz-size>340kb</span>)</strong>
+                            </div>
+
+                            <div class="dropzone-error" data-dz-errormessage></div>
+                        </div>
+                        <!--end::File-->
+
+                        <!--begin::Progress-->
+                        <div class="dropzone-progress">
+                            <div class="progress">
+                                <div
+                                    class="progress-bar bg-primary"
+                                    role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Progress-->
+
+                        <!--begin::Toolbar-->
+                        <div class="dropzone-toolbar">
+                            <span class="dropzone-delete" data-dz-remove><i class="bi bi-x fs-1"></i></span>
+                        </div>
+                        <!--end::Toolbar-->
+                    </div>
+                </div>
+                <!--end::Items-->
+            </div>
+            <!--end::Dropzone-->
+
+            <!--begin::Hint-->
+            <span class="form-text text-muted">Max file size is 1MB and max number of files is 5.</span>
+            <!--end::Hint-->
+        </div>
+        <!--end::Col-->
+
+
+    </div>
+    <!--end::Input group-->
+</form>
+<!--end::Form-->
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="col-lg-6 p-5">
+    <!-- Search Query and Search Type -->
+    <div class="form-group row">
+
+        <div class="fs-6 fw-bold mb-0">Search Query
+            <a class="m-0" href="#" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+            <span class="ms-2">
+                <i class="ki-duotone ki-information fs-7">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+            </span>
+        </a>
+        </div>
+
+
+
+
+        <div class="col-9">
+            <div class="input-group input-group-lg">
+                <input type="text" id="search_query_input" placeholder="Your Search Query" class="form-control form-control-lg" aria-label="Search Query" aria-describedby="inputGroup-sizing-lg"/>
+            </div>
+        </div>
+        <div class="col-3">
+            <select id="search_type" class="form-select form-select-lg" data-control="select2" data-placeholder="Select an option">
+                <option value="Semantic">Semantic</option>
+                <option value="Algolia">Algolia</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="mb-10">
+        <label class="form-label">Tags</label>
+        <input class="form-control form-control-lg" id="kt_tagify_1" value="tag1, tag2, tag3"/>
+    </div>
+
+    <script>
+        var input1 = document.querySelector("#kt_tagify_1");
+        new Tagify(input1);
+    </script>
+
+    <!-- Custom Fields Repeater -->
+    <div id="kt_docs_repeater_basic">
+        <h6>Custom Fields</h6>
+        <div class="form-group">
+            <div data-repeater-list="kt_docs_repeater_basic">
+                <div data-repeater-item>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label class="form-label">Name:</label>
+                            <input type="text" class="form-control form-control-lg mb-2 mb-md-0 custom-field" placeholder="Field Name"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Value:</label>
+                            <input type="text" class="form-control form-control-lg mb-2 mb-md-0 custom-field" placeholder="Field Value"/>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group mt-5">
+            <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                Add
+            </a>
+        </div>
+    </div>
+
+    <!-- Generate Search Query Button -->
+    <button class="btn btn-success" id="generate_search_query">
+        <span class="indicator-label">Generate Search Query</span>
+        <span class="indicator-progress">Please wait...<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+    </button>
+
+    <!-- Output -->
+    <div id="search_query_output"></div>
+
+
+
+
+
+
+</div>
+</div>
+
+    <script>
+        // Initialize Repeater
+        $('#kt_docs_repeater_basic').repeater({
+            initEmpty: false,
+            defaultValues: { 'text-input': 'foo' },
+            show: function () { $(this).slideDown(); },
+            hide: function (deleteElement) { $(this).slideUp(deleteElement); }
+        });
+
+        // Generate Search Query
+        $('#generate_search_query').click(function() {
+            var searchQuery = $('#search_query_input').val();
+            var searchType = $('#search_type').val();
+            var tags = $('#kt_tagify_1').val();
+            var customFields = $('.custom-field').map(function() { return $(this).val(); }).get().join(', ');
+
+            var output = `
+                Search Query: ${searchQuery}<br>
+                Search Type: ${searchType}<br>
+                Tags: ${tags}<br>
+                Custom Fields: ${customFields}
+            `;
+
+            $('#search_query_output').html(output);
+        });
+    </script>
+
+<script>
+$(document).ready(function() {
+    // Initialize Dropzone
+    const id = "#kt_dropzonejs_example_3";
+    const dropzone = document.querySelector(id);
+
+    var previewNode = dropzone.querySelector(".dropzone-item");
+    previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+
+    var myDropzone = new Dropzone(id, {
+        url: "/yolo",
+        parallelUploads: 20,
+        maxFilesize: 10,
+        previewTemplate: previewTemplate,
+        previewsContainer: id + " .dropzone-items",
+        clickable: id + " .dropzone-select"
+    });
+
+    myDropzone.on("addedfile", function(file) {
+        const dropzoneItems = dropzone.querySelectorAll('.dropzone-item');
+        dropzoneItems.forEach(dropzoneItem => {
+            dropzoneItem.style.display = '';
+        });
+    });
+
+    myDropzone.on("totaluploadprogress", function(progress) {
+        const progressBars = dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.width = progress + "%";
+        });
+    });
+
+    myDropzone.on("sending", function(file) {
+        const progressBars = dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.opacity = "1";
+        });
+    });
+
+    myDropzone.on("complete", function(progress) {
+        const progressBars = dropzone.querySelectorAll('.dz-complete');
+        setTimeout(function() {
+            progressBars.forEach(progressBar => {
+                progressBar.querySelector('.progress-bar').style.opacity = "0";
+                progressBar.querySelector('.progress').style.opacity = "0";
+            });
+        }, 300);
+    });
+});
+
+
+</script>

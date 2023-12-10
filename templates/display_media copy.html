@@ -1,0 +1,84 @@
+<div class="col-md-6 p-1 bg-white">
+          {% if media_data.type == 'video' %}
+            
+          
+          <div class="video-container" id="{{ media_data.video }}" data-media_data-id="{{ media_data.id }}">
+              <video class="video-js bg-white" controls preload="false" muted poster="{{ media_data.thumbnail }}">
+                <source src="{{ media_data.url }}" type="video/mp4">
+              </video>
+              <div class="video_overlay" data-media_data-id="{{ media_data.id }}">
+                <div class="icon top-left">TL</div>
+                <div class="icon top-right">TR</div>
+                <div class="icon bottom-left">BL</div>
+                <div class="icon bottom-right">{{media_data.id}}</div>
+              </div>
+              <div class="play-button"><i class="fa-solid fa-play"></i></h1></div>
+            </div>
+  
+          {% elif media_data.type == 'image' %}
+            <div class="image-container" style="text-align: center;">
+              <img src="{{ media_data.url }}" alt="{{ media_data.description }}" style="max-width: 100%;">
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <!--begin::Card-->
+                    <div class="card  overlay overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="assets/media/stock/600x400/img-1.jpg" alt="" class="w-100 rounded"/>
+                            </div>
+                            <div class="overlay-layer bg-dark bg-opacity-25">
+                                <a href="#" class="btn btn-primary btn-shadow">Explore</a>
+                                <a href="#" class="btn btn-light-primary btn-shadow ms-2">Purchase</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Card-->
+                </div>
+            
+                <div class="col-lg-4">
+                    <!--begin::Card-->
+                    <div class="card  overlay overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="assets/media/stock/600x400/img-2.jpg" alt="" class="w-100 rounded"/>
+                            </div>
+                            <div class="overlay-layer bg-dark bg-opacity-25 align-items-end justify-content-center">
+                                <div class="d-flex flex-grow-1 flex-center  py-5">
+                                    <a href="#" class="btn btn-primary btn-shadow">Explore</a>
+                                    <a href="#" class="btn btn-light-primary btn-shadow ms-2">Purchase</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Card-->
+                </div>
+            
+                <div class="col-lg-4">
+                    <!--begin::Card-->
+                    <div class="card  overlay overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="assets/media/stock/600x400/img-3.jpg" alt="" class="w-100 rounded"/>
+                            </div>
+                            <div class="overlay-layer bg-dark bg-opacity-25 align-items-start justify-content-center">
+                                <div class="d-flex flex-grow-1 flex-center py-5">
+                                    <a href="#" class="btn btn-primary btn-shadow">Explore</a>
+                                    <a href="#" class="btn btn-light-primary btn-shadow ms-2">Purchase</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Card-->
+                </div>
+            </div>
+
+
+
+
+          {% endif %}
+</div>
+
+

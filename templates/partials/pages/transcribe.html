@@ -1,0 +1,334 @@
+  <div class="app-content flex-column-fluid" id="kt_app_content">
+    <div class="app-container container-xxl" id="kt_app_content_container1">
+      <div class="row">
+
+
+
+
+        <!-- Existing Card -->
+        <div class="col-xl-9 mb-5">
+          <div class="card">
+            
+			<div class="card-header">
+              <div class="card-title fs-2 fw-bold">Get Transcription</div>
+            </div>
+
+            <div class="card-body p-4">
+              <div id="form-container">
+				<form id="my-form">
+
+
+
+                  <ul class="nav nav-tabs nav-line-tabs m-5 fs-6">
+                    <li class="nav-item">
+                      <a class="nav-link active" data-bs-toggle="tab" href="#kt_tab_pane_1">File</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" data-bs-toggle="tab" href="#kt_tab_pane_2">Link</a>
+                    </li>
+                  </ul>
+                  
+				 
+				  <div class="tab-content m-5" id="myTabContent">
+                    
+					<div class="tab-pane fade show active " id="kt_tab_pane_1" role="tabpanel">
+                      <div class="dropzone" id="kt_dropzonejs_example_1" name="files">
+                        <div class="dz-message needsclick">
+                          <i class="ki-duotone ki-file-up fs-3x text-primary"></i>
+                          <div class="ms-4">
+                            <h3 class="fs-5 fw-bold text-gray-900 mb-1">Drop files here or click to upload.</h3>
+                            <span class="fs-7 fw-semibold text-gray-400">Upload 1 file</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
+                      <label for="link" class="form-label">Link</label>
+                      <input type="text" class="form-control" id="link" name="link" placeholder="https://youtube.com">
+					</div>
+                  </div>
+
+				  
+				  <div class="m-3">
+					<p>Return Text Only</p>
+				  <div class="form-check form-switch form-check-custom form-check-solid">
+					<input class="form-check-input" type="checkbox" id="flexSwitchDefault" name="text_only"/>
+					<label class="form-check-label" for="flexSwitchDefault"></label>
+				  </div>
+				</div>
+
+
+				<div class="m-3">
+					<p>Characters Per Line</p>
+					<input type="range" class="form-range" id="myRange" min="0" max="60" value="0" name="characters_per_line">
+						<span class="text-muted small" id="rangeValue">0</span>
+				</div>
+				
+
+
+
+
+                  <!-- <button type="" class="btn btn-primary" id="">Submit</button> -->
+				  
+				  <div class="d-flex justify-content-end">
+				  <button type="submit" class="btn btn-primary me-10" id="submit-button">
+
+					<span class="indicator-label">
+						Submit
+					</span>
+					<span class="indicator-progress">
+						Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+					</span>
+				</button>
+
+				</div>
+
+
+                </form>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+        <!-- New Card -->
+        
+		
+		
+		
+		<div class="col-xl-3 mb-5">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title fs-3 fw-bold">Result</div>
+            </div>
+
+            <div class="card-body p-4">
+
+
+				<div id="submission-result-container" class="d-grid gap-2 mx-auto d-none">
+
+				<a type="button" class="btn btn-flex btn-success mx-auto" href="#" id="download_link_button">
+					<i class="ki-duotone ki-folder-down fs-2">
+						<span class="path1"></span>
+						<span class="path2"></span>
+					</i>Download
+				</a>
+
+
+				</div>
+
+
+
+			
+			
+			  <!-- <button class="btn btn-light-primary" data-clipboard-target="#submission-result-container">
+				Copy
+			</button> -->
+
+				
+			</div>
+
+
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!-- Your HTML here -->
+
+<script>
+    const myRange = document.getElementById('myRange');
+    const rangeValue = document.getElementById('rangeValue');
+
+    myRange.addEventListener('input', function() {
+      rangeValue.textContent = this.value;
+    });
+  </script>
+
+
+
+<script>
+	// When the document is ready
+document.addEventListener('DOMContentLoaded', function() {
+
+// Initialize Dropzone
+var myDropzone = new Dropzone("#kt_dropzonejs_example_1", {
+	url: "/upload",
+	paramName: "file",
+	maxFiles: 10,
+	maxFilesize: 1000,
+	addRemoveLinks: true,
+	accept: function(file, done) {
+		if (file.name === "wow.jpg") {
+			done("Naha, you don't.");
+		} else {
+			done();
+		}
+	}
+});
+
+// Logging file data on Dropzone success event
+myDropzone.on("success", function(file, response) {
+	console.log(myDropzone.files);
+});
+
+// Select the form element
+const form = document.getElementById('my-form');
+
+// Add form submit event listener
+form.addEventListener('submit', function(e) {
+	e.preventDefault();
+
+
+	// Element to indecate
+	var button = document.getElementById('submit-button');
+
+	// Activate indicator
+    button.setAttribute("data-kt-indicator", "on");
+
+    // Disable indicator after 3 seconds
+    // setTimeout(function() {
+    //     button.removeAttribute("data-kt-indicator");
+    // }, 3000);
+
+	
+
+
+	// Initialize formData as an empty object
+	let formData = {};
+
+	// Loop through all input, select, and textarea elements in the form
+	Array.from(form.querySelectorAll('input, select, textarea')).forEach(input => {
+		let type = input.getAttribute('type');
+		
+		// Check if the input is a checkbox or radio button
+		if (type === 'radio' || type === 'checkbox') {
+			if (input.checked) {
+				formData[input.name] = input.value;
+			}
+		} else {
+			formData[input.name] = input.value;
+		}
+	});
+
+	// Add file information from Dropzone
+	const fileList = myDropzone.files.map(file => {
+		return { name: file.name, size: file.size, type: file.type };
+	});
+	formData['files'] = fileList;
+
+	// Debug log
+	console.log(formData);
+
+	// Send formData to the server
+	fetch('/do_transcription', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(formData)
+	})
+	.then(response => response.json())
+	.then(data => {
+		// Show response in submission-result-container
+		// const resultContainer = document.getElementById('submission-result-container');
+		// resultContainer.innerHTML = `<p>${data.message}</p>`;
+		console.log(data);
+
+		// Show the result container
+		const resultContainer = document.getElementById('submission-result-container');
+		resultContainer.classList.remove('d-none');
+
+		// Update the text in the result container
+
+
+
+
+		// Update the download link in the button
+		const downloadButton = document.getElementById('download_link_button');
+		if (data.download_link) {
+			downloadButton.href = data.download_link;
+		}
+
+
+
+
+
+
+		button.removeAttribute("data-kt-indicator");
+
+	})
+	.catch(error => {
+		console.error('Error:', error);
+		button.removeAttribute("data-kt-indicator");
+		const resultContainer = document.getElementById('submission-result-container');
+		resultContainer.classList.remove('d-none');
+		resultContainer.innerHTML = `<p>ERROR: ${error}</p>`;
+
+
+
+
+
+
+	});
+
+
+
+
+});
+
+
+
+
+// Select elements
+const target = document.getElementById('submission-result-container');
+const button = target.nextElementSibling;
+
+// Init clipboard -- for more info, please read the offical documentation: https://clipboardjs.com/
+var clipboard = new ClipboardJS(button, {
+    target: target,
+    text: function() {
+        return target.value;
+    }
+});
+
+// Success action handler
+clipboard.on('success', function(e) {
+    const currentLabel = button.innerHTML;
+
+    // Exit label update when already in progress
+    if(button.innerHTML === 'Copied!'){
+        return;
+    }
+
+    // Update button label
+    button.innerHTML = 'Copied!';
+
+    // Revert button label after 3 seconds
+    setTimeout(function(){
+        button.innerHTML = currentLabel;
+    }, 3000)
+});
+
+
+
+
+// the end
+
+});
+
+  </script>
+  
+<script>
+
+
+</script>
+  

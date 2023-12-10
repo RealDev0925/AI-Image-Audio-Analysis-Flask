@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Compose Project{% endblock %}
+{% block content %}
+
+{% include 'partials/projects_nav.html' %}
+
+
+
+<div class="row p-5 m-5">
+{{project_data}}
+<br>
+{#{scenes_data}#}
+<br>
+</div>
+
+
+{% if project_data.final_media %}
+<div class="row p-5 m-5">
+    <div class="col-12">
+        <h3>Final Video</h3>
+        <video width="480" height="480" controls>
+            <source src="{{ project_data.final_media }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
+{% endif %}
+
+
+
+
+
+<script>
+
+  // Content to load on button clicks. 
+
+
+  $(document).ready(function () {
+
+    $("#tts_button").click(function () {
+      $.get("/text_to_speech_form/{{ project_id }}", function (data) {
+        $("#drawer_universal_content").html(data);
+      });
+    });
+
+    $("#words_button").click(function () {
+      $.get("/words_list/{{ project_id }}", function (data) {
+        $("#drawer_universal_content").html(data);
+      });
+    });
+
+    $("#compose_final_button").click(function () {
+      $.get("/pages/compose_final_video_form?project_id={{ project_id }}", function (data) {
+        $("#drawer_universal_content").html(data);
+      });
+    });
+
+
+  });
+
+
+
+</script>
+
+
+
+{% endblock %}

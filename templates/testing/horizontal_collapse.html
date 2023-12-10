@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bootstrap 5 Two-Column Layout</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .full-width {
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <!-- First Column -->
+      <div id="col1" class="col">
+        <button class="btn btn-primary toggle-button" type="button" data-bs-toggle="collapse" data-bs-target="#firstColumn" data-col-id="col1">
+          Toggle First Column
+        </button>
+        <div id="firstColumn" class="collapse show">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">First Column</h5>
+              <p class="card-text">Content for the first column.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second Column -->
+      <div id="col2" class="col">
+        <button class="btn btn-primary toggle-button" type="button" data-bs-toggle="collapse" data-bs-target="#secondColumn" data-col-id="col2">
+          Toggle Second Column
+        </button>
+        <div id="secondColumn" class="collapse show">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Second Column</h5>
+              <p class="card-text">Content for the second column.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Get all the toggle buttons
+    const toggleButtons = document.querySelectorAll('.toggle-button');
+
+    // Loop through and add click event listeners
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-col-id');
+        const otherColId = targetId === 'col1' ? 'col2' : 'col1';
+        const otherCol = document.getElementById(otherColId);
+
+        setTimeout(() => {
+          if (document.querySelector(this.getAttribute('data-bs-target')).classList.contains('show')) {
+            otherCol.classList.remove('full-width');
+          } else {
+            otherCol.classList.add('full-width');
+          }
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>

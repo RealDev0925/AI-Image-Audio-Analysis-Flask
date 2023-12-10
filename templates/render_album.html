@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Gallery with Hover Preview</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Video.js CSS -->
+  <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      overflow: hidden;
+      background-color: #fff;
+    }
+
+    .vjs-tech { 
+    background-color: #fff;
+    }
+
+
+    .video-js {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white; /* Add this line */
+  }
+
+  video[poster]{
+    object-fit: cover;
+  }
+  .vjs-poster {
+    background-size: cover;
+    background-position: inherit;
+  }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .play-button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2em;
+      opacity: 1;
+      transition: opacity 0.3s;
+      pointer-events: auto;
+    }
+    .icon {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      background-color: #fff;
+      opacity: 0.7;
+      pointer-events: auto;
+    }
+    .top-left { top: 0; left: 0; }
+    .top-right { top: 0; right: 0; }
+    .bottom-left { bottom: 0; left: 0; }
+    .bottom-right { bottom: 0; right: 0; }
+  </style>
+</head>
+<body>
+  
+  <div class="">
+    <div class="row">
+
+
+      
+      {% for item in album_data %}
+
+      
+
+      <div class="col-md-6 p-1 bg-white">
+        {% if item.type == 'video' %}
+        <div class="video-container" id="{{ item.video }}">
+          <video id="" class="video-js bg-white" controls preload="false" muted poster="{{ item.thumbnail }}">
+            <source src="{{ item.url }}" type="video/mp4">
+          </video>
+
+          <div class="overlay">
+            <div class="icon top-left">TL</div>
+            <div class="icon top-right">TR</div>
+            <div class="icon bottom-left">BL</div>
+            <div class="icon bottom-right">BR</div>
+          </div>
+          <div class="play-button">▶</div>
+        </div>
+
+        {% elif item.type == 'image' %}
+        <!-- Image Section -->
+        <div class="image-container" style="text-align: center;">
+          <img src="{{ item.url }}" alt="{{ item.description }}" style="max-width: 100%;">
+        </div>
+        {% endif %}
+
+
+      </div>
+      <!-- Add more columns for other videos -->
+
+      {% endfor %}
+
+
+
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Video.js -->
+  <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+  <!-- Custom Script -->
+<script>
+  $(document).ready(function() {
+    
+    // Loop through each video container
+    $('.video-container').each(function() {
+      
+      // Get video element inside this container
+      var videoElement = $(this).find('video.video-js')[0];
+      
+      // Initialize Video.js player for this video element
+      var player = videojs(videoElement, {
+        controls: false,
+        autoplay: false,
+        preload: false,
+        muted: true
+      });
+      
+      // Hover event handlers for this container
+      $(this).hover(function() {
+        player.play();
+        $(this).find('.overlay').css('opacity', '1');
+        $(this).find('.play-button').css('opacity', '0');
+      }, function() {
+        player.pause();
+        player.currentTime(0);
+        $(this).find('.overlay').css('opacity', '0');
+        $(this).find('.play-button').css('opacity', '1');
+      });
+
+      // Click event handler for play-button inside this container
+    //   $(this).find('.play-button').click(function() {
+    //     window.location.href = 'path/to/full/video/page'; // Replace with the link to the full video page
+    //   });
+
+    });
+    
+  });
+</script>
+
+</body>
+</html>

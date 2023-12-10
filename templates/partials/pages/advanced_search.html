@@ -1,0 +1,255 @@
+
+<form data-kt-search-element="advanced-options-form" class="pt-1"
+data-select2-id="select2-data-9-gpa5">
+<!--begin::Heading-->
+<h3 class="fw-semibold text-dark mb-7">Advanced Search</h3>
+<!--end::Heading-->
+
+<!--begin::Input group-->
+<div class="mb-5">
+    <input type="text" class="form-control form-control-sm form-control-solid"
+        placeholder="Contains the word" name="query">
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="mb-5">
+    <!--begin::Radio group-->
+    <div class="nav-group nav-group-fluid">
+        <!--begin::Option-->
+        <label>
+            <input type="radio" class="btn-check" name="type" value="has" checked="checked">
+            <span class="btn btn-sm btn-color-muted btn-active btn-active-primary">
+                All
+            </span>
+        </label>
+        <!--end::Option-->
+
+        <!--begin::Option-->
+        <label>
+            <input type="radio" class="btn-check" name="type" value="users">
+            <span class="btn btn-sm btn-color-muted btn-active btn-active-primary px-4">
+                Users
+            </span>
+        </label>
+        <!--end::Option-->
+
+        <!--begin::Option-->
+        <label>
+            <input type="radio" class="btn-check" name="type" value="orders">
+            <span class="btn btn-sm btn-color-muted btn-active btn-active-primary px-4">
+                Orders
+            </span>
+        </label>
+        <!--end::Option-->
+
+        <!--begin::Option-->
+        <label>
+            <input type="radio" class="btn-check" name="type" value="projects">
+            <span class="btn btn-sm btn-color-muted btn-active btn-active-primary px-4">
+                Projects
+            </span>
+        </label>
+        <!--end::Option-->
+    </div>
+    <!--end::Radio group-->
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="mb-5">
+    <input type="text" name="assignedto" class="form-control form-control-sm form-control-solid"
+        placeholder="Assigned to" value="">
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="mb-5">
+    <input type="text" name="collaborators"
+        class="form-control form-control-sm form-control-solid" placeholder="Collaborators"
+        value="">
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="mb-5">
+    <!--begin::Radio group-->
+    <div class="nav-group nav-group-fluid">
+        <!--begin::Option-->
+        <label>
+            <input type="radio" class="btn-check" name="attachment" value="has"
+                checked="checked">
+            <span class="btn btn-sm btn-color-muted btn-active btn-active-primary">
+                Has attachment
+            </span>
+        </label>
+        <!--end::Option-->
+
+        <!--begin::Option-->
+        <label>
+            <input type="radio" class="btn-check" name="attachment" value="any">
+            <span class="btn btn-sm btn-color-muted btn-active btn-active-primary px-4">
+                Any
+            </span>
+        </label>
+        <!--end::Option-->
+    </div>
+    <!--end::Radio group-->
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="mb-5" data-select2-id="select2-data-8-xvsb">
+    <select name="timezone" aria-label="Select a Timezone" data-control="select2"
+        data-placeholder="date_period"
+        class="form-select form-select-sm form-select-solid select2-hidden-accessible"
+        data-select2-id="select2-data-1-a8rl" tabindex="-1" aria-hidden="true"
+        data-kt-initialized="1">
+        <option value="next" data-select2-id="select2-data-3-gk3n">Within the next</option>
+        <option value="last" data-select2-id="select2-data-18-g4yg">Within the last</option>
+        <option value="between" data-select2-id="select2-data-19-ttxo">Between</option>
+        <option value="on" data-select2-id="select2-data-20-hfln">On</option>
+    </select><span
+        class="select2 select2-container select2-container--bootstrap5 select2-container--below"
+        dir="ltr" data-select2-id="select2-data-2-o226" style="width: 100%;"><span
+            class="selection"><span
+                class="select2-selection select2-selection--single form-select form-select-sm form-select-solid"
+                role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0"
+                aria-disabled="false" aria-labelledby="select2-timezone-5t-container"
+                aria-controls="select2-timezone-5t-container"><span
+                    class="select2-selection__rendered" id="select2-timezone-5t-container"
+                    role="textbox" aria-readonly="true" title="Between">Between</span><span
+                    class="select2-selection__arrow" role="presentation"><b
+                        role="presentation"></b></span></span></span><span
+            class="dropdown-wrapper" aria-hidden="true"></span></span>
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="row mb-8">
+    <!--begin::Col-->
+    <div class="col-6">
+        <input type="number" name="date_number"
+            class="form-control form-control-sm form-control-solid" placeholder="Lenght"
+            value="">
+    </div>
+    <!--end::Col-->
+
+    <!--begin::Col-->
+    <div class="col-6">
+        <select name="date_typer" aria-label="Select a Timezone" data-control="select2"
+            data-placeholder="Period"
+            class="form-select form-select-sm form-select-solid select2-hidden-accessible"
+            data-select2-id="select2-data-4-kxi2" tabindex="-1" aria-hidden="true"
+            data-kt-initialized="1">
+            <option value="days" data-select2-id="select2-data-6-xdd9">Days</option>
+            <option value="weeks">Weeks</option>
+            <option value="months">Months</option>
+            <option value="years">Years</option>
+        </select><span class="select2 select2-container select2-container--bootstrap5" dir="ltr"
+            data-select2-id="select2-data-5-or5o" style="width: 100%;"><span
+                class="selection"><span
+                    class="select2-selection select2-selection--single form-select form-select-sm form-select-solid"
+                    role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0"
+                    aria-disabled="false" aria-labelledby="select2-date_typer-4n-container"
+                    aria-controls="select2-date_typer-4n-container"><span
+                        class="select2-selection__rendered" id="select2-date_typer-4n-container"
+                        role="textbox" aria-readonly="true" title="Days">Days</span><span
+                        class="select2-selection__arrow" role="presentation"><b
+                            role="presentation"></b></span></span></span><span
+                class="dropdown-wrapper" aria-hidden="true"></span></span>
+    </div>
+    <!--end::Col-->
+</div>
+<!--end::Input group-->
+
+<!--begin::Actions-->
+<div class="d-flex justify-content-end">
+    <button type="reset" class="btn btn-sm btn-white fw-bold btn-active-light-primary me-2"
+        data-kt-search-element="advanced-options-form-cancel">Cancel</button>
+
+    <a href="/html/keen/docs/pages/search/horizontal" class="btn btn-sm fw-bold btn-primary"
+        data-kt-search-element="advanced-options-form-search">Search</a>
+</div>
+<!--end::Actions-->
+</form>
+
+
+<form data-kt-search-element="preferences" class="pt-1">
+<!--begin::Heading-->
+<h3 class="fw-semibold text-dark mb-7">Search Preferences</h3>
+<!--end::Heading-->
+
+<!--begin::Input group-->
+<div class="pb-4 border-bottom">
+    <label
+        class="form-check form-switch form-switch-sm form-check-custom form-check-solid flex-stack">
+        <span class="form-check-label text-gray-700 fs-6 fw-semibold ms-0 me-2">
+            Projects
+        </span>
+
+        <input class="form-check-input" type="checkbox" value="1" checked="checked">
+    </label>
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="py-4 border-bottom">
+    <label
+        class="form-check form-switch form-switch-sm form-check-custom form-check-solid flex-stack">
+        <span class="form-check-label text-gray-700 fs-6 fw-semibold ms-0 me-2">
+            Targets
+        </span>
+        <input class="form-check-input" type="checkbox" value="1" checked="checked">
+    </label>
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="py-4 border-bottom">
+    <label
+        class="form-check form-switch form-switch-sm form-check-custom form-check-solid flex-stack">
+        <span class="form-check-label text-gray-700 fs-6 fw-semibold ms-0 me-2">
+            Affiliate Programs
+        </span>
+        <input class="form-check-input" type="checkbox" value="1">
+    </label>
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="py-4 border-bottom">
+    <label
+        class="form-check form-switch form-switch-sm form-check-custom form-check-solid flex-stack">
+        <span class="form-check-label text-gray-700 fs-6 fw-semibold ms-0 me-2">
+            Referrals
+        </span>
+        <input class="form-check-input" type="checkbox" value="1" checked="checked">
+    </label>
+</div>
+<!--end::Input group-->
+
+<!--begin::Input group-->
+<div class="py-4 border-bottom">
+    <label
+        class="form-check form-switch form-switch-sm form-check-custom form-check-solid flex-stack">
+        <span class="form-check-label text-gray-700 fs-6 fw-semibold ms-0 me-2">
+            Users
+        </span>
+        <input class="form-check-input" type="checkbox" value="1">
+    </label>
+</div>
+<!--end::Input group-->
+
+<!--begin::Actions-->
+<div class="d-flex justify-content-end pt-7">
+    <button type="reset" class="btn btn-sm btn-white fw-bold btn-active-light-primary me-2"
+        data-kt-search-element="preferences-dismiss">Cancel</button>
+    <button type="submit" class="btn btn-sm fw-bold btn-primary">Save Changes</button>
+</div>
+<!--end::Actions-->
+</form>
+
+
+
+

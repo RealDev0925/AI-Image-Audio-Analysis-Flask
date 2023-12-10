@@ -1,0 +1,60 @@
+<!-- <form id="form2">
+</form>
+<button class="form_submitter" data-form-id="form2">Submit Form 2</button> -->
+
+
+<script>
+    $(document).ready(function() {
+        $('.form_submitter').click(function(event) {
+
+            event.preventDefault(); // Prevent default button behavior
+
+            var button = $(this);
+            var originalHtml = button.html(); // Store original HTML
+
+            // Disable the button and show the spinner
+            button.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+            var formId = button.data('form-id');
+
+
+
+            var formData = $('#' + formId).serializeArray(); // Serialize form data
+
+            // Disable all form fields
+            var form = $('#' + formId);
+            form.find('input, textarea, select, button').prop('disabled', true);
+
+
+            // Append formId to formData
+            formData.push({name: 'formId', value: formId});
+
+            console.log('Sending FormData with formId:', formData); // Log serialized data with formId
+
+            // Simulate a delay of 2 seconds before sending the AJAX request
+            setTimeout(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '/process_forms',
+                    data: JSON.stringify(formData), // Converting data to JSON string
+
+                    contentType: 'application/json', // Setting content type as JSON
+                    dataType: 'json', // Expecting JSON response
+
+                    success: function(response) {
+                        // Handle success
+                        button.prop('disabled', false).html(originalHtml); // Reset button to original state
+                        form.find('input, textarea, select, button').prop('disabled', false);
+                        $(document).trigger("formSubmitted." + formId, [response]);
+                    },
+                    error: function(error) {
+                        // Handle error
+                        button.prop('disabled', false).html(originalHtml); // Reset button to original state
+                        form.find('input, textarea, select, button').prop('disabled', false);
+                        $(document).trigger("formSubmissionFailed." + formId, [error]);
+                    }
+                });
+            }, 1000); // Delay of 2000 milliseconds
+        });
+    });
+</script>

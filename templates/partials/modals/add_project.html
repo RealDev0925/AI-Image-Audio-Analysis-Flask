@@ -1,0 +1,186 @@
+<div aria-hidden="true" class="modal fade" id="add_project" tabindex="-1">
+	<!--begin::Modal dialog-->
+	<div class="modal-dialog modal-dialog-centered mw-650px">
+	<!--begin::Modal content-->
+	<div class="modal-content">
+	<!--begin::Modal header-->
+	<div class="modal-header" id="add_project_header">
+	<!--begin::Modal title-->
+	<h2 class="fw-bold">Add Project</h2>
+	<!--end::Modal title-->
+	<!--begin::Close-->
+	<div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close">
+	<i class="ki-duotone ki-cross fs-1">
+	<span class="path1"></span>
+	<span class="path2"></span>
+	</i>
+	</div>
+	<!--end::Close-->
+	</div>
+
+
+	<!--end::Modal header-->
+	<!--begin::Modal body-->
+	<div class="modal-body px-5 my-7">
+	<!--begin::Form-->
+	<form action="#" class="form" id="add_project_form">
+	<!--begin::Scroll-->
+	<div class="d-flex flex-column scroll-y px-5 px-lg-10" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-dependencies="#add_project_header" data-kt-scroll-max-height="auto" data-kt-scroll-offset="300px" data-kt-scroll-wrappers="#add_project_scroll" id="add_project_scroll">
+	
+	
+		<!--begin::Input group-->
+	
+	<!--end::Input group-->
+	<!--begin::Input group-->
+	<div class="fv-row mb-7">
+	<!--begin::Label-->
+	<label class="required fw-semibold fs-6 mb-2">Project Name</label>
+	<!--end::Label-->
+	<!--begin::Input-->
+	<input class="form-control form-control-solid mb-3 mb-lg-0" name="project_name" placeholder="Project name" type="text" value="My Awesome Video"/>
+	<!--end::Input-->
+	</div>
+	<!--end::Input group-->
+	
+
+	
+	<!--end::Input group-->
+	<!--begin::Input group-->
+	
+	<!--end::Input group-->
+	</div>
+
+
+
+	
+	<!--end::Scroll-->
+	<!--begin::Actions-->
+	<div class="text-center pt-10">
+	<button class="btn btn-light me-3" data-kt-users-modal-action="cancel" type="reset">Discard</button>
+	<button class="btn btn-primary" data-kt-users-modal-action="submit" type="submit">
+	<span class="indicator-label">Submit >></span>
+	<span class="indicator-progress">Please wait...
+	<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+	</button>
+	</div>
+	<!--end::Actions-->
+	</form>
+	<!--end::Form-->
+	</div>
+	<!--end::Modal body-->
+	</div>
+	<!--end::Modal content-->
+	</div>
+	<!--end::Modal dialog-->
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Variables
+        const form = document.getElementById('add_project_form');
+        const element = document.getElementById('add_project'); // Replace with the actual ID of your modal element
+        const modal = new bootstrap.Modal(element);
+
+        // Form submission handler
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const jsonData = {};
+
+            for (let [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+
+            console.log(jsonData);
+
+            fetch('/create_project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to create project');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form');
+            });
+        });
+
+        // Cancel button handler
+        const cancelButton = element.querySelector('[data-kt-users-modal-action="cancel"]');
+        cancelButton.addEventListener('click', e => {
+            e.preventDefault();
+
+            Swal.fire({
+                text: "Are you sure you would like to cancel?",
+                icon: "warning",
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: "Yes, cancel it!",
+                cancelButtonText: "No, return",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-active-light"
+                }
+            }).then(function (result) {
+                if (result.value) {
+                    form.reset(); // Reset form			
+                    modal.hide();	
+                } else if (result.dismiss === 'cancel') {
+                    Swal.fire({
+                        text: "Your form has not been cancelled!.",
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                        }
+                    });
+                }
+            });
+        });
+
+        // Close button handler
+        const closeButton = element.querySelector('[data-kt-users-modal-action="close"]');
+        closeButton.addEventListener('click', e => {
+            e.preventDefault();
+
+            Swal.fire({
+                text: "Are you sure you would like to cancel?",
+                icon: "warning",
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: "Yes, cancel it!",
+                cancelButtonText: "No, return",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-active-light"
+                }
+            }).then(function (result) {
+                if (result.value) {
+                    form.reset(); // Reset form			
+                    modal.hide();	
+                } else if (result.dismiss === 'cancel') {
+                    Swal.fire({
+                        text: "Your form has not been cancelled!.",
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

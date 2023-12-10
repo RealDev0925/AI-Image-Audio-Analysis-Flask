@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Gallery</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .image-container {
+      height: 400px;
+      overflow: hidden;
+    }
+    .image-container img {
+      object-fit: cover;
+      min-height: 100%;
+      min-width: 100%;
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .selected {
+      border: 4px solid blue;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="row" id="">
+
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      
+      </div>
+
+
+    <div class="row" id="gallery">
+
+
+    <!-- Gallery item -->
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4 gallery-item" data-info="Lorem ipsum dolor sit amet, consectetur adipisicing elit">
+      <div class="bg-white rounded shadow-sm">
+        <div class="image-container">
+          <img src="https://bootstrapious.com/i/snippets/sn-gallery/img-1.jpg" alt="" class="card-img-top">
+        </div>
+        <div class="p-4">
+          <h5> <a href="#" class="text-dark">Red paint cup</a></h5>
+          <p class="small text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+          <div class="d-flex align-items-center justify-content-between rounded-pill bg-light px-3 py-2 mt-4">
+            <p class="small mb-0"><i class="fas fa-picture-o me-2"></i><span class="fw-bold">JPG</span></p>
+            <div class="badge bg-danger px-3 rounded-pill fw-normal">New</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4 gallery-item" data-info="Lorem ipsum dolor sit amet, consectetur adipisicing elit">
+        <div class="bg-white rounded shadow-sm">
+          <div class="image-container">
+            <img src="https://bootstrapious.com/i/snippets/sn-gallery/img-1.jpg" alt="" class="card-img-top">
+          </div>
+          <div class="p-4">
+            <h5> <a href="#" class="text-dark">Red paint cup</a></h5>
+            <p class="small text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+            <div class="d-flex align-items-center justify-content-between rounded-pill bg-light px-3 py-2 mt-4">
+              <p class="small mb-0"><i class="fas fa-picture-o me-2"></i><span class="fw-bold">JPG</span></p>
+              <div class="badge bg-danger px-3 rounded-pill fw-normal">New</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 mb-4 gallery-item" data-info="Lorem ipsum dolor sit amet, consectetur adipisicing elit">
+        <div class="bg-white rounded shadow-sm">
+          <div class="image-container">
+            <img src="https://bootstrapious.com/i/snippets/sn-gallery/img-1.jpg" alt="" class="card-img-top">
+          </div>
+          <div class="p-4">
+            <h5> <a href="#" class="text-dark">Red paint cup</a></h5>
+            <p class="small text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+            <div class="d-flex align-items-center justify-content-between rounded-pill bg-light px-3 py-2 mt-4">
+              <p class="small mb-0"><i class="fas fa-picture-o me-2"></i><span class="fw-bold">JPG</span></p>
+              <div class="badge bg-danger px-3 rounded-pill fw-normal">New</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Gallery item End -->
+  </div>
+
+  <!-- Selected item information -->
+  <div class="container mt-4">
+    <div id="selected-info">
+      <!-- Information will be displayed here -->
+    </div>
+  </div>
+
+  <!-- Add the FontAwesome library if you're using FontAwesome icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const gallery = document.getElementById("gallery");
+  const selectedInfo = document.getElementById("selected-info");
+  let multiSelectMode = true; // Default to single-select mode
+
+  // Add event listener for the toggle button
+    // document.getElementById("toggle-mode").addEventListener("click", function() {
+    //     multiSelectMode = !multiSelectMode;
+    //     this.innerText = multiSelectMode ? "Switch to Single-Select" : "Switch to Multi-Select";
+    // });
+
+  gallery.addEventListener("click", function(event) {
+    let item = event.target.closest(".gallery-item");
+
+    if (!item) return; // Not clicked on an item
+
+    if (multiSelectMode) {
+      // Toggle 'selected' class for clicked item in multi-select mode
+      item.classList.toggle("selected");
+    } else {
+      // Remove 'selected' class from all items in single-select mode
+      gallery.querySelectorAll(".gallery-item").forEach(function(element) {
+        element.classList.remove("selected");
+      });
+      // Add 'selected' class to clicked item in single-select mode
+      item.classList.add("selected");
+    }
+
+    // Show information about the selected items
+    let selectedItems = gallery.querySelectorAll(".selected");
+    let infoHtml = `<h4>Selected Item(s) Information:</h4>`;
+    selectedItems.forEach(function(selectedItem) {
+      infoHtml += `<p>${selectedItem.dataset.info}</p>`;
+    });
+    selectedInfo.innerHTML = infoHtml;
+  });
+});
+
+  </script>
+
+</body>
+</html>

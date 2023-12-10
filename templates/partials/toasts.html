@@ -1,0 +1,52 @@
+
+<script>
+(function() {
+    // Function to check if Bootstrap is loaded
+    function isBootstrapLoaded() {
+        return (typeof bootstrap !== 'undefined' && bootstrap.Toast);
+    }
+
+    // Function to check if jQuery is loaded
+    function isJQueryLoaded() {
+        return (typeof jQuery !== 'undefined');
+    }
+
+    // Function to initialize toast container
+    function initializeToastContainer() {
+        if ($('#toast-container').length === 0) {
+            $('body').append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3 z-index-3"></div>');
+        }
+    }
+
+    // Function to show toast
+    window.showToast = function(message) {
+         console.log('showToast');
+        // Check if Bootstrap and jQuery are loaded
+        if (!isJQueryLoaded() || !isBootstrapLoaded()) {
+            console.error('Missing dependencies: jQuery and Bootstrap are required.');
+            return;
+        }
+
+        initializeToastContainer();
+
+        var toastId = 'toast-' + Date.now();
+        var toastHtml = `
+            <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="fa-solid fa-bell"></i>
+                    <strong class="me-auto"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">${message}</div>
+            </div>`;
+
+        $('#toast-container').append(toastHtml);
+
+        var toastElement = new bootstrap.Toast($('#' + toastId), {
+            delay: 5000
+        });
+        toastElement.show();
+    };
+})();
+
+</script>

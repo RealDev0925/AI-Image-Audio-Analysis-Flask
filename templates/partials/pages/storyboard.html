@@ -1,0 +1,154 @@
+<script src="{{ url_for('static', filename='assets/js/handlebars.min.js') }}"></script>
+
+<div id="target-div"></div>
+
+
+<!-- Create Handlebars template -->
+{% raw %}
+
+<script id="card-template" type="text/x-handlebars-template">
+    <div class="py-5">
+        <div class="col draggable-zone">
+          {{#each scenes_list}}
+            <div class="draggable m-5" id="{{scene_id}}">
+                <div class="card card-bordered">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h3 class="card-label">Card {{scene_id}} </h3>
+                        </div>
+                        
+                        <div class="card-toolbar">
+                            <a href="#" class="btn btn-icon btn-sm btn-hover-light-primary draggable-handle">
+                                <i class="ki-duotone ki-abstract-14 fs-2x"><span class="path1"></span><span class="path2"></span></i>                            </a>
+                        </div>
+
+
+                    </div>
+                    <div class="card-body">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                        when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                    </div>
+                </div>
+            </div>
+          {{/each}}
+        </div>
+    </div>
+  </script>
+  {% endraw %}
+
+
+
+
+
+
+  
+
+
+
+<script src="{{ url_for('static', filename='assets/plugins/custom/draggable/draggable.bundle.js') }}"></script>
+
+<script>
+    // Your Handlebars fetch and render
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('http://127.0.0.1:5000/supabase/select?table=video_creator_projects&column=id&value=3')
+    .then(response => response.json())
+    .then(data => {
+      const scenes_list = data[0].scenes_list;
+
+      const source = document.getElementById('card-template').innerHTML;
+      const template = Handlebars.compile(source);
+      const html = template({ scenes_list });
+
+      console.log(scenes_list)
+
+      // Target the specific div to append the rendered HTML
+      const targetDiv = document.getElementById('target-div');
+      targetDiv.innerHTML = html;
+
+      // Initialize draggable functionality after rendering cards
+      KTDraggableCards.init();
+
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});
+
+// Your draggable functionality
+"use strict";
+
+var KTDraggableCards = function() {
+    var exampleCards = function() {
+        var containers = document.querySelectorAll('.draggable-zone');
+        if (containers.length === 0) {
+            return false;
+        }
+
+        var swappable = new Sortable.default(containers, {
+            draggable: '.draggable',
+            handle: '.draggable .draggable-handle',
+            mirror: {
+                appendTo: 'body',
+                constrainDimensions: true
+            }
+        });
+
+      
+        // Listen for the drag:stop event
+swappable.on('drag:stop', function() {
+    let newOrder = [];
+    containers.forEach(function(container) {
+        const divOrder = Array.from(container.querySelectorAll('.draggable'))
+                               .map(div => div.id.replace('div', ''));
+        divOrder.forEach((scene_id, position) => {
+            newOrder.push({
+                position,
+                scene_id
+            });
+        });
+    });
+
+    // Prepare your data to send to the server
+    const payload = {
+        table: "video_creator_projects",
+        id: 3, // Replace with the actual ID
+        new_data: {
+            scenes_list: newOrder // Update this based on your data model
+        }
+    };
+
+    console.log(payload)
+
+
+
+
+    // Send PUT request
+    fetch('http://127.0.0.1:5000/supabase/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+
+    console.log('Current order in container', newOrder);
+});
+
+    }
+
+    return {
+        init: function() {
+            exampleCards();
+        }
+    };
+}();
+
+</script>

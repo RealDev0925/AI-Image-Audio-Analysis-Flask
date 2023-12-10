@@ -1,0 +1,593 @@
+
+
+<ul class="nav nav-tabs nav-line-tabs mb-5 fs-6">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#inputstab">Inputs</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#variablestab">Variables</a>
+    </li>
+</ul>
+
+
+
+
+<form id="gen_sd_images">
+    <input type="hidden" id="project_id" name="project_id" value="{{ data.project_id }}">
+
+    <div class="tab-content mb-5" id="myTabContent">
+        <div class="tab-pane fade show active" id="inputstab" role="tabpanel">
+            <!-- tab inner -->
+
+            <div class="my-2">
+                <label for="workflowSelect">sd_workflow:</label>
+                <select class="form-select" name="workflow_id" id="workflowSelect" data-control="select2"
+                    data-placeholder="Select an option">
+                    <option></option>
+                </select>
+            </div>
+            <div class="inputs-container">
+                <div class="form-group mt-2" id="form_group_1">
+                </div>
+            </div>
+
+            <div class="my-2">
+                <button type="button" class="btn btn-primary w-100 " id="gen_sd_images_button">
+                    <span class="indicator-label">
+                        <i class="fa-solid fa-play"></i> Generate Media
+                    </span>
+                    <span class="indicator-progress">
+                        Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- tab inner -->
+        </div>
+        <div class="tab-pane fade" id="variablestab" role="tabpanel">
+            <!-- tab inner -->
+
+
+            <div id="variables_repeater">
+                <div class="form-group">
+                    <div data-repeater-list="prompt_variables">
+                        <div data-repeater-item>
+                            <div class="input-group mb-3">
+                                <input type="text" name="key" class="form-control" placeholder="key">
+                                <input type="text" name="value" class="form-control" placeholder="value">
+                                <button type="button" class="btn btn-outline-secondary" data-repeater-delete><i
+                                        class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group my-2 d-flex">
+                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary me-2"><i
+                            class="ki-duotone ki-plus fs-3"></i>Add Variable</a>
+                </div>
+            </div>
+
+            <!-- tab inner -->
+        </div>
+    </div>
+</form>
+
+<div class="d-flex">
+
+    <button type="button" class="btn btn-success" id="save_settings_button">
+        <span class="indicator-label">
+            <i class="fa-regular fa-floppy-disk"></i> Save
+        </span>
+        <span class="indicator-progress">
+            Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+    </button>
+
+    <button type="button" class="btn btn-secondary" id="load_settings_button">
+        <span class="indicator-label">
+            <i class="fa-solid fa-download"></i> load
+        </span>
+        <span class="indicator-progress">
+            Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+    </button>
+
+</div>
+
+<div class="my-2" id="result">
+    {{ data.project_id }}
+</div>
+
+
+
+
+<script src="{{ url_for('static', filename='assets/js/formrepeater.js') }}"></script>
+
+<script>
+
+
+
+
+    // Utility function for sliders
+    function setupSlider(sliderId) {
+        const slider = document.getElementById(sliderId);
+        const sliderValue = document.getElementById(`${sliderId}Value`);
+        slider.oninput = function () {
+            sliderValue.textContent = this.value;
+        };
+    }
+
+
+
+    $(document).ready(function () {
+
+
+        var workflowsData = {};
+
+        function createTextInput(key, value) {
+            var inputHtml = `
+        <div class="my-4">
+        <label >${key}:</label>
+        <textarea id="${key}" name="${key}" class="form-control kt_autosize" data-kt-autosize="true" rows="1" placeholder="" style="overflow: hidden; overflow-wrap: break-word; resize: none; text-align: start; height: 100px;">${value || ''}</textarea>
+        </div>
+            `;
+            return $(inputHtml);
+        }
+
+        function createImageInput(key) {
+            return $('<label></label>').text('Upload ' + key + ': ').append(
+                $('<input>', { type: 'file', name: key, class: 'form-control w-100', accept: 'image/*' })
+            );
+        }
+
+        function createSelectInput(key, values) {
+            var selectHtml = `
+        <div class="my-4">
+        <label >${key}:</label>
+        <select class="form-select" name="${key}" id="${key}Select" data-placeholder="Select an option">
+        ${values.map(value => `<option value="${value}">${value}</option>`).join('')}
+        </select>
+        </div>
+        `;
+            return $(selectHtml);
+        }
+
+
+        function createRangeInput(key, value) {
+            var selectHtml = `
+                       <div class="mb-3">
+                      <label >${key}: <span id="${key}Value">${value.value}</span></label>
+                      <input type="range" class="form-range" id="${key}" name="${key}" min="${value.min}" max="${value.max}" step="${value.step}" value="${value.value}">
+
+                    </div>
+                    `;
+            return $(selectHtml);
+        }
+
+        function createCheckboxInput(key, isChecked) {
+            // Determine if the checkbox should have the 'checked' attribute
+            var checkedAttribute = isChecked ? 'checked' : '';
+
+            // Construct the HTML string with the proper 'checked' state
+            var checkboxHtml = `
+                <div class="form-check form-switch me-5">
+            <input class="form-check-input" type="checkbox" id="${key}" name="${key}" ${checkedAttribute}>
+            <label class="form-check-label" >${key}</label>
+                   </div>
+                   `;
+            return checkboxHtml;
+        }
+
+
+
+        function createNumberInput(key, value) {
+            var inputHtml = `
+               <div class="w-md-300px mb-3">
+              <label >${key}:</label>
+             <input type="number" name="${key}" class="form-control" id="${key}number" placeholder="Enter A Number" value="${value || ''}">
+              </div>
+        `;
+            return $(inputHtml);
+        }
+
+        function createSizeInput(key, value) {
+            var inputHtml = `
+                <div class="w-md-300px mb-3">
+              <label >Width x Height:</label>
+                <div class="input-group" id="${key}">
+              <input type="number" name="${key}-width" class="form-control" id="${key}-width" placeholder="Width" value="${value.width || ''}">
+                <input type="number" name="${key}-height" class="form-control" id="${key}-height" placeholder="Height" value="${value.height || ''}">
+             </div>
+            </div>
+        `;
+            return $(inputHtml);
+        }
+
+        function createStepperInput(key, value) {
+            var inputHtml = `
+        <label >${key}:</label>
+        <div class="input-group w-md-300px mb-3"
+        data-kt-dialer="true"
+        data-kt-dialer-currency="false"
+        data-kt-dialer-min="${value.min || '1'}"
+        data-kt-dialer-max="${value.max || '10'}"
+        data-kt-dialer-step="${value.step || '1'}"
+        id = "${key}">
+        <button class="btn btn-icon btn-outline btn-active-color-primary" type="button" data-kt-dialer-control="decrease"> <i class="ki-duotone ki-minus fs-2"></i> </button>
+        <input type="text" name="${key}" class="form-control" readonly placeholder="Amount" value="${value.value || '5'}" data-kt-dialer-control="input"/>
+        <button class="btn btn-icon btn-outline btn-active-color-primary" type="button" data-kt-dialer-control="increase"><i class="ki-duotone ki-plus fs-2"></i> </button>
+        </div>
+        `;
+            return $(inputHtml);
+        }
+
+
+        function createSeedInput(key, value) {
+            var inputHtml = `
+        <label >${key}:</label>
+        <div class="input-group w-md-300px mb-3">
+        <input id="seed_input" type="number" name="${key}" class="form-control" readonly placeholder="seed" value="${value || '-1'}"/>
+        <button class="btn btn-icon btn-outline btn-active-color-primary" type="button" id="seed_random"><i class="fa-solid fa-dice"></i> </button>
+        <button class="btn btn-icon btn-outline btn-active-color-primary" type="button" id="seed_refresh"><i class="fa-solid fa-arrows-rotate"></i> </button>
+        </div>
+        `;
+            return $(inputHtml);
+        }
+
+
+        // Fetch workflows data
+        $.getJSON('/sd_workflows', function (data) {
+            console.log('Data:', data);
+            var $workflowSelect = $('#workflowSelect').empty().append('<option></option>');
+
+            // Assume there's a container to hold dynamically created input fields.
+            var $inputContainer = $('#workflowInputs').empty();
+
+            // Loop through the data and add options to the select element
+            data.forEach(function (workflow) {
+                // Store the inputs for each workflow
+                workflowsData[workflow.id] = workflow.inputs;
+
+                // Add options to the select element
+                $workflowSelect.append($('<option></option>').attr('value', workflow.id).text(workflow.name));
+
+                // Create input HTML for each workflow and add it to the input container.
+                var inputHtml = `
+            <div class="my-4" id="input-${workflow.id}" style="display: none;">
+                <label for="input-${workflow.id}">${workflow.name}:</label>
+                <input type="text" id="input-${workflow.id}" name="${workflow.id}" class="form-control w-100" placeholder="Enter ${workflow.name}" value="${workflow.defaultValue || ''}">
+            </div>
+        `;
+                $inputContainer.append(inputHtml);
+            });
+
+            // Initialize select2 if you are using it
+            $workflowSelect.select2();
+
+            // Listen to changes on the select element to show the corresponding input
+            $workflowSelect.on('change', function () {
+                var selectedId = $(this).val();
+                // Hide all input fields
+                $inputContainer.children('div').hide();
+                // Show only the one that corresponds to the selected workflow
+                if (selectedId) {
+                    $('#input-' + selectedId).show();
+                }
+            });
+
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.error('Error fetching data:', textStatus, errorThrown);
+        });
+
+
+
+
+
+        // Listener for when the select changes
+        $('#workflowSelect').change(function () {
+            var selectedId = $(this).val(); // Get the selected workflow ID
+            console.log('Selected ID:', selectedId);
+            var inputs = workflowsData[selectedId]; // Get the inputs for the selected workflow
+
+            // Clear the previous inputs
+            var $inputsContainer = $('.inputs-container').empty();
+
+            // If there are inputs, create form elements based on the type
+            if (inputs && inputs.length) {
+
+                inputs.forEach(function (inputItem) {
+                    // Directly use inputItem.type, inputItem.key, inputItem.value
+                    switch (inputItem.type) {
+
+                        case 'text':
+                            $inputsContainer.append(createTextInput(inputItem.key, inputItem.value));
+                            autosize($('.kt_autosize'));
+                            break;
+
+                        case 'number':
+                            $inputsContainer.append(createNumberInput(inputItem.key, inputItem.value));
+                            break;
+
+
+
+                        case 'image':
+                            $inputsContainer.append(createImageInput(inputItem.key));
+                            break;
+
+
+                        case 'select':
+                            if (inputItem.key === "model") {
+                                // Make AJAX call to get the models list
+                                $.ajax({
+                                    url: '/sd_models',
+                                    type: 'GET',
+                                    success: function (response) {
+                                        var modelsList = response;
+
+                                        // Ensure inputItem.value is an array and has at least one element
+                                        if (Array.isArray(inputItem.value) && inputItem.value.length > 0) {
+                                            var selectedItem = inputItem.value[0];
+
+                                            // Remove selectedItem if it exists in the response
+                                            modelsList = modelsList.filter(function (item) {
+                                                return item !== selectedItem;
+                                            });
+
+                                            // Add selectedItem to the top of the list
+                                            modelsList.unshift(selectedItem);
+                                        }
+
+                                        // Update inputItem.value with the new modelsList
+                                        inputItem.value = modelsList;
+
+                                        // Append the select input with the new list
+                                        var $selectInput = createSelectInput(inputItem.key, modelsList);
+                                        $inputsContainer.append($selectInput);
+                                        // Initialize select2 on the new select input
+                                        $selectInput.find('select').select2();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error fetching models:', error);
+                                    }
+                                });
+                            } else {
+                                // If the key is not 'model', just append the select input as it is
+                                var $selectInput = createSelectInput(inputItem.key, inputItem.value);
+                                $inputsContainer.append($selectInput);
+                                // Initialize select2 on the new select input
+                                $selectInput.find('select').select2();
+                            }
+                            break;
+
+
+                        case 'range':
+                            $inputsContainer.append(createRangeInput(inputItem.key, inputItem.value));
+                            setupSlider(inputItem.key);
+                            break;
+
+
+                        case 'stepper':
+                            // var stepperID = "stepper_" + inputItem.key;
+                            $inputsContainer.append(createStepperInput(inputItem.key, inputItem.value));
+                            var dialerElement = document.querySelector("#" + inputItem.key);
+                            var dialerObject = new KTDialer(dialerElement);
+
+                            break;
+
+                        case 'seed':
+                            $inputsContainer.append(createSeedInput(inputItem.key, inputItem.value));
+                            // When the seed_random button is clicked, set the value of seed_input to -1
+                            $('#seed_random').on('click', function () {
+                                $('#seed_input').val('-1');
+                            });
+
+                            // When the seed_refresh button is clicked, set a random value between 1000000 and 10000000
+                            $('#seed_refresh').on('click', function () {
+                                var randomValue = Math.floor(Math.random() * (10000000 - 1000000 + 1)) + 1000000;
+                                $('#seed_input').val(randomValue);
+                            });
+                            break;
+                        case "size":
+                            $inputsContainer.append(createSizeInput(inputItem.key, inputItem.value));
+                            break;
+
+                        case 'checks':
+                            var $checkboxesContainer = $('<div class="d-flex flex-row"></div>');
+
+                            Object.keys(inputItem.value).forEach(function (optionKey) {
+                                // Create each checkbox, passing the checkbox name and whether it is checked
+                                var isChecked = inputItem.value[optionKey];
+                                $checkboxesContainer.append(createCheckboxInput(optionKey, isChecked));
+                            });
+
+                            // Append the flex container to your inputs container
+                            $inputsContainer.append($checkboxesContainer);
+                    }
+                });
+            }
+        });
+
+
+        var button = document.querySelector("#gen_sd_images_button");
+        // Attach click event listener to the button
+        button.addEventListener("click", function () {
+            button.setAttribute("data-kt-indicator", "on");
+            // Serialize the form data
+            // var formData = new FormData($('#gen_sd_images')[0]);
+            var formData = $('#gen_sd_images').serializeArray(); // Serialize form data
+            console.log('Form data:', formData);
+
+            // Make POST request to /gen_sd_images with the form data
+            $.ajax({
+                url: '/gen_sd_images_2',
+                type: 'POST',
+
+
+                data: JSON.stringify(formData), // Converting data to JSON string
+                contentType: 'application/json', // Setting content type as JSON
+                dataType: 'json', // Expecting JSON response
+
+
+                success: function (data) {
+                    console.log('success..:', data);
+
+                    // Clear previous results
+                    $('#result').empty();
+
+                    // Check if data is an array and has items
+                    if (Array.isArray(data) && data.length > 0) {
+                        // Initialize an HTML string for the image container with Bootstrap's grid system
+                        let htmlContent = '<div class="row">';
+
+                        // Loop through each item in the data array
+                        data.forEach(function (item) {
+                            // Only proceed if the item has a URL
+                            if (item.url) {
+                                // Append HTML for each image column to the htmlContent string
+                                htmlContent += `
+                                <div class="col-6">
+                                <img src="${item.url}" alt="Loaded image" class="img-fluid img-thumbnail">
+                                </div>`;
+                            }
+                        });
+
+                        // Close the div for the image container
+                        htmlContent += '</div>';
+
+                        // Append the HTML content to the result element
+                        $('#result').html(htmlContent);
+                        button.removeAttribute("data-kt-indicator");
+                    } else {
+                        $('#result').text('No images to display.');
+                        button.removeAttribute("data-kt-indicator");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle any error here
+                    $('#result').html('<p>An error occurred</p>');
+                    console.error('Error:', error);
+                    button.removeAttribute("data-kt-indicator");
+                }
+            });
+        });
+
+
+
+        var save_button = document.querySelector("#save_settings_button");
+        // Attach click event listener to the button
+        save_button.addEventListener("click", function () {
+            save_button.setAttribute("data-kt-indicator", "on");
+            // Serialize the form data
+            // var formData = new FormData($('#gen_sd_images')[0]);
+            var formData = $('#gen_sd_images').serializeArray(); // Serialize form data
+            console.log('Form data:', formData);
+
+            // Make POST request to /gen_sd_images with the form data
+            $.ajax({
+                url: '/save_sd_settings',
+                type: 'POST',
+                data: JSON.stringify(formData), // Converting data to JSON string
+                contentType: 'application/json', // Setting content type as JSON
+                dataType: 'json', // Expecting JSON response
+
+                success: function (data) {
+                    console.log('success..:', data);
+                    setTimeout(function () {
+                        save_button.removeAttribute("data-kt-indicator");
+                    }, 1000);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    setTimeout(function () {
+                        save_button.removeAttribute("data-kt-indicator");
+                    }, 1000);
+                }
+            });
+        });
+
+        const project_id = 37
+
+        var load_button = document.querySelector("#load_settings_button");
+
+
+
+
+
+        function selectWorkflowAndFillInputs(formData, workflowsData) {
+            // Find the workflow id from the formData
+            const workflowItem = formData.find(item => item.name === 'workflow_id');
+            const workflowId = workflowItem ? workflowItem.value : null;
+
+            // Set the workflow in the select dropdown
+            const $workflowSelect = $('#workflowSelect');
+
+            $workflowSelect.val(workflowId).trigger('change');
+
+
+
+            formData.forEach(item => {
+                if (item.name !== 'workflow_id') {
+                    const $input = $('[name="' + item.name + '"]');
+                    if ($input.attr('type') === 'checkbox') {
+                        $input.prop('checked', item.value === 'on');
+                    } else if ($input.is('select') && item.type === 'select') {
+                        // For select, set the value and trigger change to refresh any dependent UI components
+                        $input.val(item.value).trigger('change');
+                    } else {
+                        $input.val(item.value); // Set the value for other input types
+                    }
+
+                    // Check if the item name is 'prompt_variables' and then set the list
+                    if (item.name === 'prompt_variables') {
+                        $variables_repeater.setList(item.value);
+                    }
+                }
+            });
+
+        }
+
+        // Usage within the AJAX success callback
+        load_button.addEventListener("click", function () {
+            load_button.setAttribute("data-kt-indicator", "on"); // Show loading indicator
+
+            // Make the AJAX call to your endpoint to get the saved settings
+            $.ajax({
+                url: '/load_sd_settings?project_id={{ data.project_id }}',
+                type: 'GET',
+                success: function (formData) {
+                    // Assuming 'workflowsData' is a global object or available in the scope with the workflow details
+                    selectWorkflowAndFillInputs(formData, workflowsData);
+
+                    // Remove the loading indicator after setting the form values
+                    load_button.removeAttribute("data-kt-indicator");
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors here
+                    console.error('Error:', error);
+                    load_button.removeAttribute("data-kt-indicator"); // Remove loading indicator on error
+                }
+            });
+        });
+
+    });
+
+
+
+    var $variables_repeater = $('#variables_repeater').repeater(
+        {
+            initEmpty: true,
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        }
+    );
+
+
+</script>
+
+

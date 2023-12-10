@@ -1,0 +1,265 @@
+<ul class="nav nav-tabs nav-line-tabs mb-5 fs-6">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#words_tab_1">Edit Words</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#words_tab_2">Get New Words</a>
+    </li>
+
+</ul>
+
+<div class="tab-content" id="myTabContent">
+
+
+    <div class="tab-pane fade show active" id="words_tab_1" role="tabpanel">
+
+        {% if project_data.words_list %}
+        <div class="">
+        <input type="text" id="wordSearch" placeholder="Search Words" class="form-control mb-3">
+
+        <!-- DataTable -->
+        <table id="WordsDataTable" class="table table-striped table-row-bordered gy-5 gs-7">
+            <thead>
+                <tr class="fw-semibold fs-6 text-gray-800">
+                    <th>Word</th>
+                    <th>Start</th>
+                    <th>End</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- Data will be populated here by DataTables -->
+            </tbody>
+        </table>
+
+        <!-- Edit Form -->
+        <div id="editForm" class="input-group my-10" style="display:none;">
+            <input type="text" class="form-control" id="editWord" placeholder="Word" autocomplete="off">
+            <input type="number" class="form-control" id="editStart" placeholder="Start" autocomplete="off">
+            <input type="number" class="form-control" id="editEnd" placeholder="End" autocomplete="off">
+            <button id="saveEdit" class="form-control btn btn-success">Save</button>
+        </div>
+        
+
+
+    <div class="alert alert-dismissible bg-light-primary d-flex flex-column flex-sm-row p-5 mt-10 mb-10">
+    <!-- <i class="ki-duotone ki-notification-bing fs-2hx text-primary me-4 mb-5 mb-sm-0"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i> -->
+
+    <!--begin::Wrapper-->
+    <div class="d-flex flex-column pe-0 pe-sm-10">
+        <!--begin::Title-->
+        <!-- <p class="fw-semibold">Full Text</p> -->
+        <!--end::Title-->
+
+        <!--begin::Content-->
+        <span id="full_text">Full Text</span>
+        <!--end::Content-->
+        <br>
+        <span class="text-muted" id="scene_words_match"></span>
+
+    </div>
+    <!--end::Wrapper-->
+
+    <!--begin::Close-->
+    <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+        <i class="ki-duotone ki-cross fs-1 text-primary"><span class="path1"></span><span class="path2"></span></i>
+    </button>
+    <!--end::Close-->
+    </div>
+
+
+
+    </div>
+    {% else %}
+    <p>Words not generated yet</p>
+    {% endif %}
+
+        
+
+
+    </div>
+
+
+
+    <div class="tab-pane fade" id="words_tab_2" role="tabpanel">
+        <div id="" class="mt-5">      
+            <div id="" class="mt-5">   
+                {% if project_data.speech_audio %}
+                <p>Your Generated audio:</p>
+                <p>
+                <audio controls>
+                    <source src="{{ project_data.speech_audio }}" type="audio/mp3">
+                  </audio>
+                </p>
+                <button id="generate_words_button" class="btn btn-success">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;" id="loading_spinner"></span>
+                    Generate Words From Audio
+                </button>
+                {% else %}
+                <p>Audio not generated yet</p>
+                {% endif %}
+                </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('#generate_words_button').click(function() {
+            var projectId = '{{project_id}}'; // Replace with your actual project ID
+
+            // Disable the button and show loading spinner
+            $(this).prop('disabled', true);
+            $('#loading_spinner').show();
+
+            $.ajax({
+                url: '/get_words_list?get_new=true&project_id=' + projectId,
+                type: 'GET',
+                success: function(response) {
+                    // Handle the response here
+                    console.log('Success:', response);
+                    // Reload the page
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors here
+                    console.log('Error:', xhr.responseText);
+                },
+                complete: function() {
+                    // Re-enable the button and hide loading spinner
+                    $('#generate_words_button').prop('disabled', false);
+                    $('#loading_spinner').hide();
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+<script>
+
+$(document).ready(function () {
+    const projectId = '{{project_id}}'; 
+
+    const table = $('#WordsDataTable').DataTable({
+        "scrollY": "450px",
+        "scrollCollapse": true,
+        "paging": false,
+        "dom": "<'table-responsive'tr>",
+        ajax: {
+            url: '/get_words_list?project_id=' + projectId,
+            dataSrc: ''
+        },
+        order: [], // Disable initial sorting
+        select: {
+            style: 'single' // Enable single row selection
+        },
+        columns: [
+            { data: 'word', orderable: false },
+            { data: 'start', orderable: false },
+            { data: 'end', orderable: false }
+        ],
+
+        initComplete: function() {
+            updateFullText(this.api().data());
+
+        }
+    });
+
+        // Setup - add a text input to the footer for the Word column
+        $('#wordSearch').on('keyup', function () {
+        table.columns(0).search(this.value).draw();
+    });
+
+
+
+    $('#WordsDataTable tbody').on('click', 'tr', function () {
+        handleRowSelection(table.row(this).data());
+    });
+
+    $('#saveEdit').on('click', function () {
+        saveEdits(table);
+    });
+});
+
+function handleRowSelection(rowData) {
+    $('#editWord').val(rowData.word);
+    $('#editStart').val(rowData.start);
+    $('#editEnd').val(rowData.end);
+    $('#editForm').show();
+}
+
+function saveEdits(table) {
+    const selectedRow = table.row({ selected: true });
+
+    const updatedData = {
+        word: $('#editWord').val(),
+        start: parseFloat($('#editStart').val()),
+        end: parseFloat($('#editEnd').val())
+    };
+
+    selectedRow.data(updatedData).draw();
+
+    $.ajax({
+        url: '/update_words_list',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            project_id: '{{project_id}}', // Replace with your actual project ID
+            words_list: table.data().toArray()
+        }),
+        success: function () {
+            updateFullText(table.data());
+        },
+        error: function (xhr, status, error) {
+            console.error("Update failed:", error);
+            location.reload();
+        }
+    });
+
+    $('#editForm').hide(); // Hide form after saving
+}
+
+function updateFullText(data) {    
+    const allWords = data.map(item => item.word).join(' ');
+    $('#full_text').text(allWords);
+    // checkAndUpdateSceneWordsMatch();
+}
+
+</script>
+
+
+<script>
+    // Function to check and update scene words match
+    function checkAndUpdateSceneWordsMatch() {
+        var projectId = '{{project_id}}'; 
+        const url = `/scene_words_len_match?project_id=${projectId}`;
+
+        $.get(url, function(data) {
+            if (data && data.result) {
+                $("#scene_words_match").text("words match scenes 👍");
+            } else {
+                $("#scene_words_match").text("Words do not match scenes 👎");
+            }
+        }).fail(function() {
+            console.error("Error while fetching data");
+            $("#scene_words_match").text("Error in fetching data");
+        });
+    }
+
+    // $(document).ready(function() {
+    //     // Example of how to call the function
+    //     const projectId = "{{ project_id }}"; // Replace with actual project ID or template variable
+    //     checkAndUpdateSceneWordsMatch(projectId);
+    // });
+
+    // You can call checkAndUpdateSceneWordsMatch from other functions too
+</script>

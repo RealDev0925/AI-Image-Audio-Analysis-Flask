@@ -1,0 +1,97 @@
+<form id="project_actions">
+
+    <input type="hidden" name="project_id" value="{{ data.project }}">
+    <input type="hidden" name="scene_id" value="{{ data.scene }}">
+
+    <div class="mb-10">
+    <div class="form-check form-switch mb-2">
+        <input name="text_to_split_check" class="form-check-input" type="checkbox" id="splitTextCheck" data-bs-toggle="collapse" data-bs-target="#splitTextCollapse" checked>
+        <label class="form-check-label fw-bold" for="splitTextCheck">Split Text</label>
+    </div>
+    <div class="collapse show" id="splitTextCollapse"> 
+        <div class="rounded border d-flex flex-column mb-2">
+            <textarea name="text_to_split" class="form-control kt_autosize" data-kt-autosize="true" rows="2"></textarea>
+        </div>
+        <div class="">
+            <label class="form-label text-muted">Text Split Options:</label>
+            <select  name="text_to_split_options" class="form-control">
+                <option value="Sentence">Sentence</option>
+            </select>
+        </div>
+    </div>
+    </div>
+
+
+
+    <!-- Get Keywords Option -->
+    <div class="mb-10">
+
+        <div class="form-check form-switch mb-2">
+            <input name="get_keywords_check" class="form-check-input" type="checkbox" id="getKeywordsCheck" data-bs-toggle="collapse" data-bs-target="#keywordsCollapse" checked>
+        <label class="form-check-label  fw-bold" for="getKeywordsCheck">Get Keywords</label>
+    </div>
+    <div class="collapse show" id="keywordsCollapse">
+        <div class="mb-3">
+            <label class="form-label text-muted">Keyword Options:</label>
+            <select name="get_keywords_options" class="form-control">
+                <option  value="option1">KW 1</option>
+            </select>
+        </div>
+    </div>
+    </div>
+
+    
+    <!-- Get Prompts Option -->
+    <div class="mb-10">
+
+        <div class="form-check form-switch mb-2">
+            <input name="get_prompts_check" class="form-check-input" type="checkbox" id="getPromptsCheck" data-bs-toggle="collapse" data-bs-target="#promptsCollapse" checked>
+        <label class="form-check-label  fw-bold" for="getPromptsCheck">Get Prompts</label>
+    </div>
+
+    <div class="collapse show" id="promptsCollapse">
+        <div class="mb-3">
+            <label class="form-label text-muted">Prompt Options:</label>
+
+            <select name="get_keywords_options" class="form-control" id="promptsSelect">
+                <option name="get_prompts_options" value="prompt1">Default</option>
+            </select>
+        </div>
+    </div>
+
+    </div>
+
+
+
+    <!-- Submit Button -->
+
+</form>
+
+<button type="submit" 
+id="SubmitProjectActions" 
+class="btn btn-primary form_submitter" 
+data-form-id="project_actions">
+Submit Button
+</button>
+
+
+<script>
+$('select').select2();
+
+$(document).on("formSubmitted.project_actions", function(event, response) {
+    console.log("project_actions submitted successfully", response);
+    // reload page
+    location.reload();
+
+});
+
+$(document).on("formSubmissionFailed.project_actions", function(event, error) {
+    // console.error("project_actions submission failed", error);
+    console.log("project_actions submission failed", error);
+    location.reload();
+
+
+});
+
+</script>
+{% include 'partials/form_handler.html' %}

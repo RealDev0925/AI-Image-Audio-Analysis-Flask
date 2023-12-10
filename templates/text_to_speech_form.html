@@ -1,0 +1,234 @@
+<div class="container mt-5">
+  <h3>Generate audio for project {{ project_id }}</h3>
+
+    <form id="drawer-form">
+        <div class="mb-3">
+            <select class="form-select" data-control="select2" data-placeholder="Select a voice" id="voice_selector">
+                <!-- Options will be added here dynamically -->
+            </select>
+        </div>
+
+        <div id="selectedItems">
+            <!-- Selected items will be displayed here -->
+        </div>
+
+        <div class="accordion mb-3" id="voiceSettingsAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingVoiceSettings">
+                  <!-- <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVoiceSettings" aria-expanded="false" aria-controls="collapseVoiceSettings"> -->
+                  <button class="accordion-button fs-6 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVoiceSettings" aria-expanded="false" aria-controls="collapseVoiceSettings">
+
+                    Voice Settings
+                  </button>
+
+                </h2>
+                <div id="collapseVoiceSettings" class="accordion-collapse collapse" aria-labelledby="headingVoiceSettings" data-bs-parent="#voiceSettingsAccordion">
+                  <div class="accordion-body">
+                    
+                    <!-- Sliders -->
+                    <div class="mb-3">
+                      <label for="stability">Stability:</label>
+                      <input type="range" class="form-range" id="stability" name="stability" min="0" max="1" step="0.01" value=".5">
+                      <span id="stabilityValue">0</span>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="clarity">Clarity + Similarity Enhancement:</label>
+                      <input type="range" class="form-range"  id="clarity" name="clarity" min="0" max="1" step="0.01" value=".75">
+                      <span id="clarityValue">0</span>
+                    </div>
+        
+                    <div class="mb-3">
+                      <label for="style">Style Exaggeration:</label>
+                      <input type="range" class="form-range"  id="style" name="style" min="0" max="1" step="0.01" value="0">
+                      <span id="styleValue">0</span>
+                    </div>
+        
+                    <!-- Tick box -->
+                    <div class="mb-3 form-check">
+                      <label for="speakerBoost">Speaker Boost</label>
+                      <input class="form-check-input" type="checkbox" id="speakerBoost" name="speakerBoost" checked>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          
+        <script>
+ 
+        </script>
+
+        <button type="submit" id="drawer_submit-button" class="btn btn-primary w-100">Generate Audio</button>
+    </form>
+    
+  
+    <div id="result" class="mt-5">   
+    <p>Your Generated audio:</p>
+    {% if project_data.speech_audio %}
+      <audio controls>
+        <source src="{{ project_data.speech_audio }}" type="audio/mp3">
+      </audio>
+    {% else %}
+    <p>Audio not generated yet</p>
+    {% endif %}
+      
+    </div>
+
+</div>
+
+
+
+
+
+<script>
+  $(document).ready(function() {
+  initSliders();
+  initVoiceSelector();
+  main();
+});
+
+// Initialize sliders
+function initSliders() {
+  setupSlider("stability");
+  setupSlider("clarity");
+  setupSlider("style");
+}
+
+// Utility function for sliders
+function setupSlider(sliderId) {
+  const slider = document.getElementById(sliderId);
+  const sliderValue = document.getElementById(`${sliderId}Value`);
+  slider.addEventListener("input", () => {
+    sliderValue.textContent = slider.value;
+  });
+}
+
+// Initialize voice selector
+function initVoiceSelector() {
+  const voices = JSON.parse('{{ voices|tojson|safe }}');
+  $('select').select2();
+
+  
+  // Populate voice selector
+  voices.forEach((voice) => {
+    const option = new Option(voice.name, voice.voice_id, false, false);
+    $('#voice_selector').append(option);
+  });
+
+  // On change event
+  $('#voice_selector').on('change', function() {
+    const selectedVoiceId = $(this).val();
+    displaySelectedVoiceInfo(selectedVoiceId, voices);
+  });
+}
+
+// Display selected voice information
+// Initialize allowed keys
+
+// Display selected voice information with filter
+function displaySelectedVoiceInfo(selectedVoiceId, voices) {
+  var allowedKeys = ['preview_url', 'labels']; // Replace with actual keys you want to display
+  const selectedVoice = voices.find(voice => voice.voice_id === selectedVoiceId);
+  if (selectedVoice) {
+    let selectedItems = '';
+    for (const key in selectedVoice) {
+      if (allowedKeys.includes(key)) {
+        selectedItems += formatVoiceProperty(key, selectedVoice[key]);
+      }
+    }
+    $('#selectedItems').html(selectedItems);
+  }
+}
+
+// Format voice property
+function formatVoiceProperty(key, value) {
+  if (key === 'preview_url') {
+    return `<div class="">
+            <strong>Preview Voice:</strong>
+            <br>
+            <audio controls>
+              <source src="${value}" type="audio/mp3">
+              Your browser does not support the audio element.
+            </audio>
+            </div>`;
+  }
+
+  // Check if the value is an object (like labels)
+  if (typeof value === 'object' && value !== null) {
+    return `<strong>${key}:</strong> ${formatLabels(value)}<br>`;
+  }
+
+  return `<strong>${key}:</strong> ${value}<br>`;
+}
+
+// Function to format and display label values as plain text
+function formatLabels(labels) {
+  let formattedLabels = '<p>';
+  for (const [labelKey, labelValue] of Object.entries(labels)) {
+    formattedLabels += `<strong>${labelKey}</strong>: ${labelValue}<br>`;
+  }
+  formattedLabels += '</p>';
+  return formattedLabels;
+}
+
+
+// Handle form submission
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const projectId = "{{ project_id }}";
+  const submitButton = $('#drawer_submit-button');
+  disableSubmitButton(submitButton);
+  sendFormData(projectId, submitButton);
+}
+
+// Disable the submit button and show a loading indicator
+function disableSubmitButton(submitButton) {
+  submitButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+  submitButton.prop('disabled', true);
+}
+
+// Send form data
+async function sendFormData(projectId, submitButton) {
+  const formJSON = Object.fromEntries(new FormData($('#drawer-form')[0]).entries());
+  formJSON['voice_id'] = $('#voice_selector').val();
+  formJSON['project_id'] = projectId;
+
+  $.get('/text_to_speech_api', formJSON)
+    .done(response => handleSuccess(response))
+    .fail(error => handleError(error, submitButton));
+}
+
+// Handle successful form submission
+function handleSuccess(response) {
+  console.log('Success:', response);
+  const audioPlayer = `
+    <audio controls>
+      <source src="${response.result}" type="audio/mp3">
+    </audio>`;
+  $('#result').html(audioPlayer);
+
+  const submitButton = $('#drawer_submit-button');
+  submitButton.html('Submit');
+  submitButton.prop('disabled', false);
+
+}
+
+// Handle errors during form submission
+function handleError(error, submitButton) {
+  console.error('Error:', error);
+  submitButton.html('Submit');
+  submitButton.prop('disabled', false);
+}
+
+// Main function to attach the event listener
+function main() {
+  $('#drawer-form').on('submit', handleFormSubmit);
+}
+
+</script>
+
+
+

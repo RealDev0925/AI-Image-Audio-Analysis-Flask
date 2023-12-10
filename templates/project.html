@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+{% block title %}Edit Project{% endblock %}
+{% block content %}
+{% include 'partials/projects_nav.html' %}
+
+
+<div class="row p-5 m-5">
+  <div id="button_holder" class="col p-0 pt-5 m-0 text-center col" style="max-width: 50px; ">
+    <a href="#" class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample"
+      aria-expanded="false" aria-controls="collapseWidthExample">
+      <i class="fa-solid fa-chevron-right"></i>
+    </a>
+  </div>
+
+  <div class="col col-md-6 collapse collapse-horizontal show" id="collapseWidthExample">
+    <div class="card shadow-sm" id="myCard">
+      <div class="card-header">
+        <div class="card-title fs-2 fw-bold">Select Scene</div>
+        <div class="card-toolbar">
+          <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+        </div>
+
+      </div>
+      <div class="card-body">
+
+
+        <table class="table align-middle table-row-dashed fs-6 gy-5" id="scenes_list">
+          <thead>
+            <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+              <th class="w-10px text-center"> <i class="fa fa-sort ps-4" aria-hidden="true"></i> </th>
+              <th class="min-w-125px">ID</th>
+              <th class="min-w-100px">Scene Text</th>
+            </tr>
+          </thead>
+
+          <tbody class="text-gray-600 fw-semibold">
+            <!-- Data will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer">
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="col col-md-6">
+
+    <div>
+      <div id="sceneData"></div>
+    </div>
+
+  </div>
+
+
+
+
+
+</div>
+
+
+
+<script>
+
+  var scene_id;  // Declare scene_id as a global variable
+
+
+
+  $(document).ready(function () {
+
+    const params = new URLSearchParams({
+      project_id: "{{ project_id }}"
+    });
+
+    const url = `http://127.0.0.1:5000/supabase/active_scenes_for_project?${params.toString()}`;
+
+    function fetchAndUpdateTable() {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // Sort data by scene_order_position
+          data.sort((a, b) => a.scene_order_position - b.scene_order_position);
+
+          const table = $('#scenes_list').DataTable();
+          table.clear();
+          table.rows.add(data);
+          table.draw();
+        });
+    }
+
+
+    const table = $('#scenes_list').DataTable({
+      "ordering": false,
+      "info": false,
+      "paging": false,
+
+      // responsive: true,
+
+      rowReorder: {
+        selector: 'td.reorder'
+      },
+      select: 'single',
+
+      columns: [
+        {
+          data: null,
+          defaultContent: '<i class="ps-4 fas fa-arrows-alt"></i>',
+          className: 'reorder'
+        },
+        { data: 'id' },
+        // { data: 'scene_order_position' },
+        { data: 'scene_text' }
+
+      ],
+
+      columnDefs: [
+        { targets: [1], visible: false, searchable: false }, // hide the ID column 
+      ]
+
+    });
+
+    // Initial fetch and update
+    fetchAndUpdateTable();
+
+
+    table.on('row-reorder', function (e, diff, edit) {
+
+      records_to_send = [];
+
+      for (let i = 0; i < diff.length; i++) {
+        let rowData = diff[i];
+
+        if (rowData.newPosition !== rowData.oldPosition) {
+          // Fetch data for this row
+
+          let row = table.row(rowData.node).data();
+          // console.log(`Row data: ${JSON.stringify(row)}`);
+
+          id = row.id;
+          // console.log(`id: ${id}`);
+
+
+          // Fetch old and new positions
+          // console.log(`Old position: ${rowData.oldPosition}, New position: ${rowData.newPosition}`);
+
+          // Update the row's position
+
+          records_to_send.push({ "id": id, "new_data": { "scene_order_position": rowData.newPosition + 1 } });
+
+
+
+        }
+      }
+
+      console.log(`Records to send: ${JSON.stringify(records_to_send)}`);
+
+      const payload = {
+        table: "scenes",
+        records: records_to_send
+      };
+
+      fetch('http://127.0.0.1:5000/supabase/bulk_update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(response => response.json())
+        .then(data => {
+          fetchAndUpdateTable();
+        })
+        .catch(error => {
+          console.error('Error during bulk update:', error);
+        });
+
+    });
+
+
+
+
+
+    // Event listener for row selection
+    // table.on('select', function (e, dt, type, indexes) {
+    //     if (type === 'row') {
+    //         const rowData = table.rows(indexes).data().toArray()[0];
+    //         scene_id = rowData.id;  // Set the global variable
+    //         const sceneDataDiv = document.getElementById('sceneData');
+
+    //         // Clear existing data
+    //         sceneDataDiv.innerHTML = "Scene Data<br>";
+
+    //         // Add selected row's data
+    //         for (const key in rowData) {
+    //             sceneDataDiv.innerHTML += `<strong>${key}:</strong> ${rowData[key]}<br>`;
+    //         }
+    //     }
+    // });
+
+
+
+      // Edit scene frame 
+    function loadPartialContent() {
+      $.get(`/edit_scene/${scene_id}`, function (data) {
+        $("#sceneData").html(data);
+      });
+    }
+
+    table.on('select', function (e, dt, type, indexes) {
+      if (type === 'row') {
+        const rowData = table.rows(indexes).data().toArray()[0];
+        scene_id = rowData.id;  // Set the global variable
+
+        const sceneDataDiv = document.getElementById('sceneData');
+        // Clear existing data
+        sceneDataDiv.innerHTML = "";
+
+        // Add selected row's data
+        // for (const key in rowData) {
+        //     sceneDataDiv.innerHTML += `<strong>${key}:</strong> ${rowData[key]}<br>`;
+        // }
+        loadPartialContent();
+      }
+    });
+
+
+
+  });
+
+</script>
+
+
+<script>
+  $(document).ready(function () {
+
+
+
+    // Initially hide the button_holder if collapseWidthExample is not collapsed
+    if ($("#collapseWidthExample").hasClass("show")) {
+      $("#button_holder").hide();
+    }
+
+    // Toggle visibility on collapse events
+    $("#collapseWidthExample").on('show.bs.collapse', function () {
+      $("#button_holder").hide();
+    }).on('hide.bs.collapse', function () {
+      $("#button_holder").show();
+    });
+  });
+</script>
+
+
+
+<script>
+  $(document).ready(function () {
+    $("#splitTextBtn").click(function () {
+      $.get("/split_text/{{ project_id }}", function (data) {
+        $("#splitTextContent").html(data);
+      });
+    });
+  });
+</script>
+
+
+<script>
+  // Add an event listener to the button with the ID "get_prompts"
+  document.addEventListener("DOMContentLoaded", function () {
+    const button = document.getElementById("get_prompts");
+    if (button) {
+      button.addEventListener("click", function () {
+        const projectId = "{{project_id}}"; // Replace this with the actual project ID
+
+        // Make the fetch request
+        fetch(`/get_prompts?project_id=${projectId}`)
+          .then(response => {
+            if (response.ok) {
+              // The fetch was successful
+              return response.json();
+            } else {
+              throw new Error('Network response was not ok');
+            }
+          })
+          .then(data => {
+            // Do something with the data if you want to
+            // ...
+
+            // Show page loading
+            KTApp.showPageLoading();
+
+            // Refresh the page
+            window.location.reload();
+          })
+          .catch(error => {
+            // Handle any errors
+            console.error('Fetch error:', error);
+          });
+      });
+    }
+  });
+</script>
+
+
+
+
+<script>
+
+  // Content to load on button clicks. 
+
+
+  $(document).ready(function () {
+
+
+    $("#projectActions").click(function () {
+      $.get("/pages/project_actions?project={{ project_id }}", function (data) {
+        console.log(data);
+        $("#drawer_universal_content").html(data);
+        autosize($('.kt_autosize'));
+      });
+    });
+
+
+
+    $("#ai_images").click(function () {
+      $.get("/sd_input?project_id={{project_id}}", function (data) {
+        $("#drawer_universal_content").html(data);
+      });
+    });
+
+
+
+
+    $("#GetClips").click(function () {
+      $.get("/get_clips?project_id={{ project_id }}", function (data) {
+        $("#drawer_universal_content").html(data);
+      });
+    });
+
+
+  });
+</script>
+
+
+
+{% endblock %}

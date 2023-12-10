@@ -1,0 +1,276 @@
+
+
+<div data-scene-id="{{scene_data.id}}" data-project-id="{{scene_data.project_id}}">
+    <div class="card shadow-sm" id="">
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <div class="card-title fs-2 fw-bold">Edit Scene</div>
+
+
+        <div class="dropdown">
+            <button class="btn btn-sm btn-icon btn-light btn-active-light-primary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-ellipsis-h"></i>
+            </button>
+
+            
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item create-scene" href="#">Create New Scene</a></li>
+                <li><a class="dropdown-item delete-scene" href="#">Delete Scene</a></li>
+            </ul>
+            
+          </div>
+    </div>
+
+
+
+    <div class="card-body">
+        <div id="form-container">
+            <form id="edit_scene-form">
+                <!-- Hidden field for scene_id -->
+                <input type="hidden" name="scene_id" value="{{scene_data.id}}">
+
+                <div class="rounded d-flex flex-column pb-5">
+                    <label for="scene_text" class="form-label">Scene Text</label>
+                    <textarea id="scene_text" name="scene_text" class="form-control kt_autosize" data-kt-autosize="true"
+                        rows="4" placeholder="Your Scene Text">{{scene_data.scene_text}}</textarea>
+                </div>
+
+                <div class="mb-10">
+                    <div class="repeater">
+                        <label class="form-label fw-semibold">Scene Keywords:</label>
+                        <div class="form-group">
+                            <div data-repeater-list="theme_keywords">
+                                {% if scene_data.theme_keywords %}
+                                {% for keyword in scene_data.theme_keywords %}
+                                <div data-repeater-item>
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="keyword" class="form-control" placeholder="keyword"
+                                            value="{{ keyword }}">
+                                        <button type="button" class="btn btn-outline-secondary" data-repeater-delete><i
+                                                class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                                {% else %}
+                                <div data-repeater-item>
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="keyword" class="form-control" placeholder="keyword"
+                                            value="">
+                                        <button type="button" class="btn btn-outline-secondary" data-repeater-delete><i
+                                                class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group mt-5">
+                            <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light">
+                                <i class="fa-solid fa-plus"></i> Add Keyword
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-10">
+                    <div class="repeater">
+                        <label class="form-label fw-semibold">Scene prompts:</label>
+                        <div class="form-group">
+                            <div data-repeater-list="sd_prompts">
+
+                                {% if scene_data.sd_prompts %}
+
+                                {% for keyword in scene_data.sd_prompts %}
+                                <div data-repeater-item>
+                                    <div class="input-group mb-3">
+                                        <textarea name="prompt" class="form-control kt_autosize" data-kt-autosize="true"
+                                            rows="1" placeholder="Your Scene Text">{{keyword}}</textarea>
+                                        <button type="button" class="btn btn-outline-secondary" data-repeater-delete><i
+                                                class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <div data-repeater-item>
+                                    <div class="input-group mb-3">
+                                        <textarea name="prompt" class="form-control kt_autosize" data-kt-autosize="true"
+                                            rows="1" placeholder="Your Scene Text"></textarea>
+                                        <button type="button" class="btn btn-outline-secondary" data-repeater-delete><i
+                                                class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group mt-5">
+                            <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light">
+                                <i class="fa-solid fa-plus"></i> Add Prompt
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="container my-4">
+                <div class="d-flex justify-content-between">
+
+                    <!-- Save Changes Button on the Left -->
+                    <button id="SaveChanges" type="button" class="btn btn-lg btn-success" data-form-id="edit_scene-form">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="button-text"><i class="fa-solid fa-floppy-disk"></i> Save Changes</span>
+                    </button>
+
+
+                    <button type="button" id="GetClipsForScene" class="btn btn-lg btn-light" data-kt-drawer-show="true" data-kt-drawer-target="#drawer_universal">
+                        <i class="fa-solid fa-photo-film"></i>Get Clips
+                    </button>
+
+
+                    <!-- Link to View Album -->
+                    <a href="/library?album={{scene_data.album_id}}&scene={{scene_data.id}}" target="_blank"
+                        id="viewAlbum" class="btn btn-lg btn-primary">
+                        <i class="fa-solid fa-images"></i> View Album
+                    </a>
+                </div>
+            </div>
+            <!-- <div id="result"></div> -->
+        </div>
+    </div>
+</div>
+
+
+<div class="card shadow-sm mt-5">
+    <div class="card-header">
+        <div class="card-title fs-2 fw-bold">Final Clip</div>
+    </div>
+    <div class="card-body">
+        {% if scene_data.final_clip %}
+            {% include 'display_media.html' %}    
+        {% else %}
+        <p>No final clip selected.</p>
+        {% endif %}
+    </div>
+</div>
+
+</div>
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+
+        //Autosizr text fields 
+        autosize($('.kt_autosize'));
+        //repeater
+        $('.repeater').repeater({
+            initEmpty: false,
+            show: function () {
+                $(this).slideDown();
+                autosize($('.kt_autosize')); // Apply autosize to elements
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+
+        $('#SaveChanges').click(function (event) {
+            console.log('Save Changes button clicked')
+
+            var button = $(this);
+            var originalHtml = button.html(); // Store original HTML
+            // Disable the button and show the spinner
+            button.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+
+            var formId = button.data('form-id');
+            var form = $('#' + formId);
+
+
+
+
+            event.preventDefault(); // Prevent form submission
+            event.stopPropagation(); // Stop propagation
+            var formData = $('#edit_scene-form').serializeArray(); // Serialize form data
+            form.find('input, textarea, select, button').prop('disabled', true);
+
+            $.ajax({
+                type: 'POST',
+                url: '/process_edit_scene', // URL to which the request is sent
+                contentType: 'application/json', // Setting content type as JSON
+                data: JSON.stringify(formData), // Converting data to JSON string
+                success: function (response) {
+                    console.log(response);
+                    
+                    setTimeout(function () {
+                        button.prop('disabled', false).html(originalHtml); // Reset button to original state
+                        form.find('input, textarea, select, button').prop('disabled', false);
+                    }, 800);
+
+                
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors here
+                    // $('#result').html('Error: ' + error);
+                    console.log('Error: ' + error);
+                    
+                    setTimeout(function () {
+                        button.prop('disabled', false).html(originalHtml); // Reset button to original state
+                        form.find('input, textarea, select, button').prop('disabled', false);
+                    }, 800);
+                }
+            });
+        });
+
+
+
+        // Handle Create New Scene click
+        $('.create-scene').on('click', function(event) {
+            event.preventDefault();
+            var projectId = $(this).closest('[data-project-id]').data('project-id');
+            $.get('/scene_actions', { action: 'create', project_id: projectId }, function(response) {
+                console.log('New Scene Created', response.scene_id);
+                // Additional actions after creating a scene, e.g., updating the UI
+                KTApp.showPageLoading();
+                // Refresh the page
+                window.location.reload();
+            });
+        });
+
+        // Handle Delete Scene click
+        $('.delete-scene').on('click', function(event) {
+            event.preventDefault();
+            var sceneId = $(this).closest('[data-scene-id]').data('scene-id');
+            $.get('/scene_actions', { action: 'delete', scene_id: sceneId }, function(response) {
+                console.log('Scene Deleted', response);
+
+                KTApp.showPageLoading();
+                // Refresh the page
+                window.location.reload();
+
+            });
+        });
+
+
+
+        $("#GetClipsForScene").click(function () {
+        $.get("/get_clips?project_id={{scene_data.project_id}}&selected_scene={{ scene_data.id }}", function (data) {
+        $("#drawer_universal_content").html(data);
+        });
+
+
+
+    });
+
+
+        
+
+
+
+    });
+</script>
+<script src="{{ url_for('static', filename='assets/js/formrepeater.js') }}"></script>
+

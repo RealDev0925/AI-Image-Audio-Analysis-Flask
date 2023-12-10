@@ -1,0 +1,124 @@
+<h3>Get subs for project {{ project_id }}</h3>
+
+<!-- Load jQuery first -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Then load Select2 JS and CSS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<div class="container mt-5">
+    <form id="drawer-form">
+        <div class="mb-3">
+          <p>Your Speech audio:</p>
+          {% if project_data.speech_audio %}
+            <audio controls>
+              <source src="{{ project_data.speech_audio }}" type="audio/mp3">
+            </audio>
+          {% else %}
+          <p>No speech audio found - Generate audio before subs!</p>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label for="char_count">Max Characters Per Line:</label>
+          <input type="range" class="form-range" id="char_count" name="char_count" min="0" max="60" step="1" value="1">
+          <span id="char_countValue">1</span>
+        </div>
+        
+
+        <button type="submit" id="drawer_submit-button" class="btn btn-primary w-100">Submit</button>
+    </form>
+    
+  
+    <div id="result" class="mt-5"> 
+      {% if project_data.subtitles_file %}
+      <button class="button-success">
+        {{subtitles_file}}
+      </button>
+      {% else %}
+      <p>No subs created. </p>
+      {% endif %}
+      
+    </div>
+
+</div>
+
+
+
+
+
+<script>
+  $(document).ready(function() {
+  initSliders();
+  main();
+});
+
+
+
+// Utility function for sliders
+function setupSlider(sliderId) {
+  const slider = document.getElementById(sliderId);
+  const sliderValue = document.getElementById(`${sliderId}Value`);
+  slider.addEventListener("input", () => {
+    sliderValue.textContent = slider.value;
+  });
+}
+
+
+
+
+// Handle form submission
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const projectId = "{{ project_id }}";
+  const submitButton = $('#drawer_submit-button');
+
+  disableSubmitButton(submitButton);
+  sendFormData(projectId, submitButton);
+}
+
+// Disable the submit button and show a loading indicator
+function disableSubmitButton(submitButton) {
+  submitButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+  submitButton.prop('disabled', true);
+}
+
+// Send form data
+async function sendFormData(projectId, submitButton) {
+  const formJSON = Object.fromEntries(new FormData($('#drawer-form')[0]).entries());
+  formJSON['project_id'] = projectId;
+
+  $.get('/get_subs_api', formJSON)
+    .done(response => handleSuccess(response))
+    .fail(error => handleError(error, submitButton));
+}
+
+// Handle successful form submission
+function handleSuccess(response) {
+  console.log('Success:', response);
+  const audioPlayer = `
+    <audio controls>
+      <source src="${response.result}" type="audio/mp3">
+    </audio>`;
+  $('#result').html(audioPlayer);
+
+  const submitButton = $('#drawer_submit-button');
+  submitButton.html('Submit');
+  submitButton.prop('disabled', false);
+
+}
+
+// Handle errors during form submission
+function handleError(error, submitButton) {
+  console.error('Error:', error);
+  submitButton.html('Submit');
+  submitButton.prop('disabled', false);
+}
+
+// Main function to attach the event listener
+function main() {
+  $('#drawer-form').on('submit', handleFormSubmit);
+}
+
+</script>
+

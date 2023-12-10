@@ -1,0 +1,129 @@
+<form id="get_clips">
+    <input type="hidden" name="project_id" value="{{ data.project_id }}">
+
+
+    <div class="my-10">
+    <div class="form-check form-switch mb-2">
+        <input name="stock_check" class="form-check-input" type="checkbox" id="" data-bs-toggle="collapse" data-bs-target="#collapse_1" checked>
+        <label class="form-check-label fw-bold" for="">Get Stock Images</label>
+    </div>
+
+
+    <div class="collapse show" id="collapse_1"> 
+        
+        <div class="form-check my-5">
+            <input class="form-check-input" name="stock_skip_search" type="checkbox" id="stock_get_new">
+            
+            <label class="form-check-label fw-bold" for="stock_get_new">
+             Skip getting new stock 
+            </label>
+        
+        </div>
+
+        <div class="">
+            <label class="form-label text-muted">Stock Options:</label>
+            <select  name="stock_options" name="stock_options" class="form-control" id="">
+                <option value="Default">Default</option>
+            </select>
+        </div>
+    </div>
+
+
+
+
+    </div>
+
+
+
+    <!-- AI Images -->
+    <div class="mb-10">
+        <div class="form-check form-switch mb-2">
+            <input name="ai_check" class="form-check-input" type="checkbox" id="" data-bs-toggle="collapse" data-bs-target="#collapse_2" checked>
+        <label class="form-check-label  fw-bold" for="getKeywordsCheck">Get AI Images</label>
+    </div>
+    <div class="collapse show" id="collapse_2">
+    <!-- options for ai images -->
+    </div>
+    </div>
+
+
+<label class="form-check-label  fw-bold" for="select_scenes">Get Clips For Scenes:</label>
+
+<select name ="select_scenes" class="form-select form-select-solid" id="select_scenes" data-control="select2" data-close-on-select="false" data-placeholder="All Scenes" data-allow-clear="true" multiple="multiple">
+    <option id="all" name="all" value="clear">All Scenes</option>
+    {% if active_scenes %}
+        {% for scene in active_scenes %}
+            <!-- Debug: Output the scene ID and selected scene ID -->
+            <!-- Remove these lines after debugging -->
+            Scene ID: {{ scene.id }}, Selected Scene ID: {{ data.selected_scene }}<br/>
+
+            {% if data.selected_scene and scene.id == data.selected_scene %}
+                <option name="{{ scene.id }}" value="{{ scene.id }}" selected>{{ scene.scene_text }}</option>
+            {% else %}
+                <option name ="{{ scene.id }}" value="{{ scene.id }}">{{ scene.scene_text }}</option>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+</select>
+
+
+
+</form>
+
+<button type="submit" 
+id="submit_get_clips" 
+class="btn btn-primary form_submitter mt-10 w-100" 
+data-form-id="get_clips">
+Submit
+</button>
+
+
+
+
+
+
+
+<script>
+      $('select').select2();
+
+    $(document).on("formSubmitted.get_clips", function(event, response) {
+        console.log("project_actions submitted successfully", response);
+        // reload page
+        location.reload();
+    });
+    
+    $(document).on("formSubmissionFailed.get_clips", function(event, error) {
+        // console.error("project_actions submission failed", error);
+        console.log("project_actions submission failed", error); 
+        location.reload();
+    });
+
+</script>
+
+
+<script>
+    $(document).ready(function() {
+    
+    
+        $('#select_scenes').on('select2:select', function (e) {
+            if (e.params.data.id === 'clear') {
+                // Clear all selections when 'All Scenes' is selected
+                $(this).val(null).trigger('change');
+            } else {
+                // Remove 'All Scenes' from the selected options if other options are selected
+                var selected = $(this).val() || [];
+                var clearIndex = selected.indexOf('clear');
+                if (clearIndex > -1) {
+                    selected.splice(clearIndex, 1);
+                    $(this).val(selected).trigger('change');
+                }
+            }
+        });
+    });
+    </script>
+
+    
+
+{% include 'partials/form_handler.html' %}
+    
